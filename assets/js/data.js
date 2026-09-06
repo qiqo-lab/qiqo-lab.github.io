@@ -5,21 +5,24 @@ window.QIQO_DATA = {
       role:"Co-Lead · Quantum Photonics & Quantum Information",
       affiliation:"Instituto de Telecomunicações · Instituto Superior Técnico",
       initials:"EZC",
+      image:"assets/img/people/emmanuel.jpg",
       focus:"Quantum information, foundations, quantum communication, photonic platforms and optical quantum memories.",
       links:[
         {label:"IT profile",url:"https://www.it.pt/Members/Index/34614"},
-        {label:"Técnico Scholar",url:"https://scholar.tecnico.ulisboa.pt/authors/ist169238/records"},
+        {label:"Google Scholar",url:"https://scholar.google.com/citations?hl=en&user=PnzCrFIAAAAJ"},
         {label:"ORCID",url:"https://orcid.org/0000-0003-3418-9131"}
       ]
     },
     {
       name:"Hugo Terças",
       role:"Co-Lead · Quantum Matter & Cold Atoms",
-      affiliation:"GoLP/IPFN · Instituto Superior Técnico / ISEL",
+      affiliation:"ISEL · GoLP/IPFN, Instituto Superior Técnico",
       initials:"HT",
+      image:"assets/img/people/hugo.jpg",
       focus:"Quantum matter, ultracold gases, quantum fluids and plasmas, quantum simulation and many-body physics.",
       links:[
-        {label:"Técnico profile",url:"https://plasmas.tecnico.ulisboa.pt/faculty/members"},
+        {label:"ISEL profile",url:"https://www.isel.pt/docente/hugo-fernando-santos-tercas"},
+        {label:"GoLP/IPFN profile",url:"https://plasmas.tecnico.ulisboa.pt/faculty/members"},
         {label:"Google Scholar",url:"https://scholar.google.com/citations?user=nmLAqloAAAAJ"},
         {label:"ORCID",url:"https://orcid.org/0000-0003-2826-4377"}
       ]
@@ -31,6 +34,7 @@ window.QIQO_DATA = {
       role:"Steering Board · Distinguished Professor",
       affiliation:"Instituto Superior Técnico · IPFN",
       initials:"LOS",
+      image:"assets/img/people/luis-oliveira-e-silva.jpg",
       focus:"Relativistic plasma physics, plasma-based accelerators, intense radiation sources, extreme astrophysical plasmas and large-scale particle-in-cell simulation.",
       links:[
         {label:"Técnico profile",url:"https://plasmas.tecnico.ulisboa.pt/faculty/members"},
@@ -43,6 +47,7 @@ window.QIQO_DATA = {
       role:"Steering Board · Director of IPFN",
       affiliation:"Instituto de Plasmas e Fusão Nuclear · Instituto Superior Técnico",
       initials:"BG",
+      image:"assets/img/people/bruno-goncalves.jpg",
       focus:"Fusion plasma diagnostics, real-time control, turbulence, data acquisition and engineering integration for large fusion experiments.",
       links:[
         {label:"IPFN profile",url:"https://www.ipfn.tecnico.ulisboa.pt/resources/search-publications"},
@@ -52,14 +57,14 @@ window.QIQO_DATA = {
     },
     {
       name:"Paulo Sérgio de Brito André",
-      role:"Steering Board · Full Professor",
-      affiliation:"Instituto Superior Técnico · Instituto de Telecomunicações",
+      role:"Steering Board · Director, IT-Lisbon · Full Professor",
+      affiliation:"Instituto de Telecomunicações (Lisbon) · Instituto Superior Técnico",
       initials:"PA",
-      focus:"Photonics, optical communications, optoelectronic devices, optical sensing and quantum-enabled communication technologies.",
+      image:"assets/img/people/paulo-andre.jpg",
+      focus:"Director of the Lisbon branch of Instituto de Telecomunicações and Full Professor at Instituto Superior Técnico. Research in photonics, optical communications, sensing and quantum-enabled communication technologies.",
       links:[
         {label:"IT profile",url:"https://www.it.pt/Members/Index/694"},
-        {label:"Técnico Scholar",url:"https://scholar.tecnico.ulisboa.pt/authors/ist17890/bio"},
-        {label:"Google Scholar",url:"https://scholar.google.com/scholar?q=%22Paulo+S%C3%A9rgio+de+Brito+Andr%C3%A9%22"},
+        {label:"Google Scholar",url:"https://scholar.google.com/citations?hl=en&user=absctuEAAAAJ"},
         {label:"ORCID",url:"https://orcid.org/0000-0002-6276-4976"}
       ]
     }
@@ -73,7 +78,7 @@ window.QIQO_DATA = {
     {kicker:"Quantum Sensing",title:"Quantum-enhanced sensing",text:"We explore quantum and photonic sensing concepts, including distributed optical sensing and emerging atomic platforms relevant to precision measurement and fundamental physics.",tags:["quantum sensors","distributed sensing","atomic interferometry","metrology"],icon:"sense"}
   ],
   facilities:[
-    {title:"Quantum Photonics Laboratory (QuLab)",owner:"Instituto de Telecomunicações",text:"Photonic and quantum-communication infrastructure for foundational tests, secure communications, high-dimensional optics, free-space links and optical-memory development.",url:"https://www.it.pt/Laboratories/Index/2047"},
-    {title:"Quantum Matter / Magneto-Optical-Trap Laboratory (QuantMatt/MOTLab)",owner:"GoLP / Instituto de Plasmas e Fusão Nuclear",text:"Cold-atom and quantum-matter infrastructure supporting quantum simulation, quantum fluids, many-body physics and links between plasma physics and quantum technologies.",url:"https://www.ipfn.tecnico.ulisboa.pt/"}
+    {title:"Quantum Photonics Laboratory (QuLab)",owner:"Instituto de Telecomunicações",image:"assets/img/labs/qulab.jpg",text:"Photonic and quantum-communication infrastructure for foundational tests, secure communications, high-dimensional optics, free-space links and optical-memory development.",url:"https://www.it.pt/Laboratories/Index/2047"},
+    {title:"Quantum Matter / Magneto-Optical-Trap Laboratory (QuantMatt/MOTLab)",owner:"GoLP / Instituto de Plasmas e Fusão Nuclear",image:"assets/img/labs/quantmatt-motlab.jpg",text:"Cold-atom and quantum-matter infrastructure supporting quantum simulation, quantum fluids, many-body physics and links between plasma physics and quantum technologies.",url:"https://www.ipfn.tecnico.ulisboa.pt/"}
   ]
 };
