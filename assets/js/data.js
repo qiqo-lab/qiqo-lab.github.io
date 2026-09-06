@@ -1,13 +1,68 @@
 window.QIQO_DATA = {
   leadership: [
-    {name:"Emmanuel Zambrini Cruzeiro",role:"Co-Lead · Quantum Photonics & Quantum Information",affiliation:"Instituto de Telecomunicações · Instituto Superior Técnico",initials:"EZC",focus:"Quantum information, foundations, quantum communication, photonic platforms and optical quantum memories.",links:[{label:"IT profile",url:"https://www.it.pt/Members/Index/34614"},{label:"ORCID",url:"https://orcid.org/0000-0003-3418-9131"}]},
-    {name:"Hugo Terças",role:"Co-Lead · Quantum Matter & Cold Atoms",affiliation:"GoLP/IPFN · Instituto Superior Técnico / ISEL",initials:"HT",focus:"Quantum matter, ultracold gases, quantum fluids and plasmas, quantum simulation and many-body physics.",links:[{label:"IST profile",url:"https://plasmas.tecnico.ulisboa.pt/faculty/members"},{label:"CIÊNCIAVITAE",url:"https://www.cienciavitae.pt/en/C71E-095B-5526"}]}
+    {
+      name:"Emmanuel Zambrini Cruzeiro",
+      role:"Co-Lead · Quantum Photonics & Quantum Information",
+      affiliation:"Instituto de Telecomunicações · Instituto Superior Técnico",
+      initials:"EZC",
+      focus:"Quantum information, foundations, quantum communication, photonic platforms and optical quantum memories.",
+      links:[
+        {label:"IT profile",url:"https://www.it.pt/Members/Index/34614"},
+        {label:"Técnico Scholar",url:"https://scholar.tecnico.ulisboa.pt/authors/ist169238/records"},
+        {label:"ORCID",url:"https://orcid.org/0000-0003-3418-9131"}
+      ]
+    },
+    {
+      name:"Hugo Terças",
+      role:"Co-Lead · Quantum Matter & Cold Atoms",
+      affiliation:"GoLP/IPFN · Instituto Superior Técnico / ISEL",
+      initials:"HT",
+      focus:"Quantum matter, ultracold gases, quantum fluids and plasmas, quantum simulation and many-body physics.",
+      links:[
+        {label:"Técnico profile",url:"https://plasmas.tecnico.ulisboa.pt/faculty/members"},
+        {label:"Google Scholar",url:"https://scholar.google.com/citations?user=nmLAqloAAAAJ"},
+        {label:"ORCID",url:"https://orcid.org/0000-0003-2826-4377"}
+      ]
+    }
   ],
-  steering:["Emmanuel Zambrini Cruzeiro","Hugo Terças","Paulo André","Bruno Gonçalves","Luís Oliveira e Silva"],
-  members:[
-    {name:"Pedro Ricardo Neto Mendes",role:"PhD Student",team:"QuLab / IT",initials:"PM",focus:"Entangling measurements, quantum communication and free-space/space quantum links.",url:"https://www.it.pt/Members/Index/36861"},
-    {name:"Gonçalo Lobato Baptista Teixeira",role:"PhD Student",team:"QuLab / IT",initials:"GT",focus:"High-dimensional photonic states and efficient quantum communication.",url:"https://www.it.pt/Members/Index/39955"},
-    {name:"José Senart",role:"PhD Student",team:"QuLab / IT",initials:"JS",focus:"Optical quantum memories and their applications to quantum communication.",url:"https://www.it.pt/Members/Index/39976"}
+  steering: [
+    {
+      name:"Luís Oliveira e Silva",
+      role:"Steering Board · Distinguished Professor",
+      affiliation:"Instituto Superior Técnico · IPFN",
+      initials:"LOS",
+      focus:"Relativistic plasma physics, plasma-based accelerators, intense radiation sources, extreme astrophysical plasmas and large-scale particle-in-cell simulation.",
+      links:[
+        {label:"Técnico profile",url:"https://plasmas.tecnico.ulisboa.pt/faculty/members"},
+        {label:"Google Scholar",url:"https://scholar.google.com/citations?user=pYOj_aYAAAAJ"},
+        {label:"ORCID",url:"https://orcid.org/0000-0003-2906-924X"}
+      ]
+    },
+    {
+      name:"Bruno Gonçalves",
+      role:"Steering Board · Director of IPFN",
+      affiliation:"Instituto de Plasmas e Fusão Nuclear · Instituto Superior Técnico",
+      initials:"BG",
+      focus:"Fusion plasma diagnostics, real-time control, turbulence, data acquisition and engineering integration for large fusion experiments.",
+      links:[
+        {label:"IPFN profile",url:"https://www.ipfn.tecnico.ulisboa.pt/resources/search-publications"},
+        {label:"Google Scholar",url:"https://scholar.google.com/citations?user=xf6mITAAAAAJ"},
+        {label:"ORCID",url:"https://orcid.org/0000-0003-0670-1214"}
+      ]
+    },
+    {
+      name:"Paulo Sérgio de Brito André",
+      role:"Steering Board · Full Professor",
+      affiliation:"Instituto Superior Técnico · Instituto de Telecomunicações",
+      initials:"PA",
+      focus:"Photonics, optical communications, optoelectronic devices, optical sensing and quantum-enabled communication technologies.",
+      links:[
+        {label:"IT profile",url:"https://www.it.pt/Members/Index/694"},
+        {label:"Técnico Scholar",url:"https://scholar.tecnico.ulisboa.pt/authors/ist17890/bio"},
+        {label:"Google Scholar",url:"https://scholar.google.com/scholar?q=%22Paulo+S%C3%A9rgio+de+Brito+Andr%C3%A9%22"},
+        {label:"ORCID",url:"https://orcid.org/0000-0002-6276-4976"}
+      ]
+    }
   ],
   research:[
     {kicker:"Quantum Networks",title:"Quantum communication & cryptography",text:"We develop practical and foundational tools for secure quantum communication, from high-dimensional photonic encoding and entangling measurements to free-space, fibre and satellite links.",tags:["QKD","QKPC","high-dimensional photonics","EuroQCI"],icon:"network"},
@@ -19,31 +74,6 @@ window.QIQO_DATA = {
   ],
   facilities:[
     {title:"Quantum Photonics Laboratory (QuLab)",owner:"Instituto de Telecomunicações",text:"Photonic and quantum-communication infrastructure for foundational tests, secure communications, high-dimensional optics, free-space links and optical-memory development.",url:"https://www.it.pt/Laboratories/Index/2047"},
-    {title:"Quantum Matter Laboratory (QuMatt)",owner:"GoLP / Instituto de Plasmas e Fusão Nuclear",text:"Cold-atom and quantum-matter infrastructure supporting quantum simulation, quantum fluids, many-body physics and links between plasma physics and quantum technologies.",url:"https://www.ipfn.tecnico.ulisboa.pt/"}
-  ],
-  publications:[
-    {year:2026,title:"Quantum keyless private communication under intense background noise",authors:"P. Neto Mendes, D. Rusca, H. Zbinden, E. Zambrini Cruzeiro",venue:"Physical Review A 113 (2026)",url:"https://journals.aps.org/pra/abstract/10.1103/q269-nmbv",topic:"Quantum communication"},
-    {year:2026,title:"Quantum Sensors: A Comprehensive Review and Future Perspectives",authors:"A. Bastos, E. Zambrini Cruzeiro, M. Niehus, P. S. André",venue:"IEEE Sensors Reviews (2026)",url:"https://www.it.pt/Members/Index/34614",topic:"Quantum sensing"},
-    {year:2026,title:"Temporal Effects of Surface Plasmon Polaritons in a Quantum Plasma Slab",authors:"J. T. Mendonça, J. L. Figueiredo, H. Terças",venue:"2026",url:"https://pmc.ncbi.nlm.nih.gov/articles/PMC13205913/",topic:"Quantum matter"},
-    {year:2025,title:"Unitary-invariant method for witnessing nonstabilizerness in quantum processors",authors:"R. Wagner, F. C. R. Peres, E. Zambrini Cruzeiro, E. F. Galvão",venue:"Journal of Physics A 58, 285302 (2025)",url:"https://www.it.pt/Members/Index/34614",topic:"Quantum information"},
-    {year:2025,title:"Simple portable quantum key distribution for science outreach",authors:"P. Neto Mendes, P. André, E. Zambrini Cruzeiro",venue:"American Journal of Physics 93, 69–77 (2025)",url:"https://doi.org/10.1119/5.0204077",topic:"Quantum communication"},
-    {year:2025,title:"Quantum theory of plasmon–phonon scattering in multisubband systems",authors:"S. Ribeiro, H. Terças",venue:"Journal of Physics: Condensed Matter 38 (2025)",url:"https://doi.org/10.1088/1361-648X/ae2b1b",topic:"Quantum matter"},
-    {year:2024,title:"Optical payload design for downlink quantum key distribution and keyless communication using CubeSats",authors:"P. Neto Mendes, G. Teixeira, D. Pinho, R. Rocha, P. André, M. Niehus, R. Faleiro, D. Rusca, E. Zambrini Cruzeiro",venue:"EPJ Quantum Technology 11 (2024)",url:"https://doi.org/10.1140/epjqt/s40507-024-00254-w",topic:"Quantum communication"}
-  ],
-  projects:[
-    {status:"Active",acronym:"QuantumPUF",title:"Portable Readout Quantum Physical Unclonable Functions using Luminescent Materials for Authentication",funder:"Horizon Europe",dates:"Sep 2026–Aug 2030",text:"Portable quantum-enabled authentication using luminescent materials and physically unclonable functions."},
-    {status:"Active",acronym:"ComSense",title:"Innovation in Sensors and Communications for Society",funder:"Portugal 2030",dates:"Oct 2024–Sep 2027",text:"Advanced sensing and communications research with cross-cutting photonic and quantum-relevant components."},
-    {status:"Active",acronym:"NeuroQIC",title:"Neuromorphic quantum-inspired computing",funder:"Fundação para a Ciência e a Tecnologia",dates:"Oct 2025–Sep 2026",text:"Exploring neuromorphic and quantum-inspired approaches to computation and information processing."},
-    {status:"Research line",acronym:"Quantum Networks",title:"European and Iberian quantum communication infrastructure",funder:"European / national initiatives",dates:"Ongoing",text:"Quantum-secure network research spanning fibre, free-space and cross-border infrastructure."},
-    {status:"Research line",acronym:"Cold-Atom Quantum Simulation",title:"Ultracold matter as a quantum simulator",funder:"QIQO / IPFN research programme",dates:"Ongoing",text:"Quantum simulation and many-body studies using ultracold atoms and quantum fluids."},
-    {status:"Research line",acronym:"Optical Quantum Memory",title:"Broadband and multimode atomic quantum memories",funder:"QIQO / IT research programme",dates:"Ongoing",text:"Room-temperature and atomic-memory architectures for future quantum networks."}
-  ],
-  news:[
-    {date:"2026-06-05",title:"Quantum communications workshop marks World Telecommunication Day",text:"IT researchers discussed the impact and future of quantum communications with research and industry participants at the Museu das Comunicações.",url:"https://www.it.pt/News/NewsPost/5254"},
-    {date:"2026-04-21",title:"QIQO presented at Técnico Open Day 2026",text:"QIQO was introduced to the public as the joint platform combining QuMatt and QuLab, showcasing its infrastructure and quantum-technology research directions.",url:"https://www.ipfn.tecnico.ulisboa.pt/news-and-events/news/281663955271800"},
-    {date:"2026-03-09",title:"European QuantumPUF project kicks off",text:"The Horizon Europe EIC Pathfinder project QuantumPUF launched, bringing together a European team to develop portable quantum physical unclonable functions for authentication.",url:"https://www.it.pt/News/NewsPost/5222"},
-    {date:"2026-02-18",title:"QIQO at Técnico Innovation Summit 2026",text:"The recently established laboratory was presented at TIS 2026 alongside other technology and innovation initiatives from Técnico and IT.",url:"https://www.it.pt/News/NewsPost/5216"},
-    {date:"2025-10-10",title:"First secure quantum time transfer in Portugal",text:"Portugal demonstrated secure quantum time transfer over national fibre infrastructure and connected to the European quantum communications ecosystem under PTQCI/EuroQCI.",url:"https://www.it.pt/News/NewsPost/5183"},
-    {date:"2025-07-16",title:"QIQO officially launched at Instituto Superior Técnico",text:"IT and IPFN launched QIQO as a joint hub for quantum information, quantum optics, cold atoms and advanced training in quantum technologies.",url:"https://www.it.pt/News/NewsPost/5129"}
+    {title:"Quantum Matter / Magneto-Optical-Trap Laboratory (QuantMatt/MOTLab)",owner:"GoLP / Instituto de Plasmas e Fusão Nuclear",text:"Cold-atom and quantum-matter infrastructure supporting quantum simulation, quantum fluids, many-body physics and links between plasma physics and quantum technologies.",url:"https://www.ipfn.tecnico.ulisboa.pt/"}
   ]
 };
