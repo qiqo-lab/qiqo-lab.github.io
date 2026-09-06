@@ -1,0 +1,14 @@
+/* Photo presentation layer for QIQO */
+.avatar-photo{object-fit:cover;object-position:center 20%;display:block;background:#eef0f8}
+.person-card .avatar-photo{width:82px;height:82px}
+.person-card-large .avatar-photo{width:112px;height:112px}
+.people-banner{padding-top:34px}
+.people-banner img{display:block;width:100%;max-height:520px;object-fit:cover;object-position:center;border-radius:30px;box-shadow:var(--shadow)}
+.facility-media{min-height:390px;overflow:hidden;background:#10152c}
+.facility-media img{display:block;width:100%;height:100%;min-height:390px;object-fit:cover}
+@media(max-width:820px){
+  .facility-media,.facility-media img{min-height:280px}
+  .people-banner{padding-top:20px}
+  .people-banner img{max-height:380px;border-radius:22px}
+  .person-card-large .avatar-photo{width:82px;height:82px}
+}
