@@ -1,0 +1,63 @@
+name: Weekly QIQO content review
+
+on:
+  schedule:
+    - cron: "0 8 * * 1"  # Monday 08:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: qiqo-weekly-content-review
+  cancel-in-progress: false
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out main
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install scanner dependencies
+        run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+
+      - name: Scan trusted sources
+        run: python scripts/weekly_content_update.py --summary /tmp/qiqo-weekly-summary.md
+
+      - name: Show concise review summary
+        run: cat /tmp/qiqo-weekly-summary.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Open or refresh human-review PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REVIEWER: EmmanuelZambriniCruzeiro
+          BRANCH: automation/weekly-content-review
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B "$BRANCH"
+          git add assets/js/publications-data.js assets/js/member-publications-data.js assets/js/news-data.js assets/js/projects-data.js
+          if git diff --cached --quiet; then
+            echo "No candidate content changes; no PR needed."
+            exit 0
+          fi
+          git commit -m "Weekly QIQO content candidates"
+          git push --force origin "$BRANCH"
+          PR="$(gh pr list --head "$BRANCH" --base main --state open --json number --jq '.[0].number // empty')"
+          TITLE="Weekly QIQO content review — $(date -u +%Y-%m-%d)"
+          if [ -z "$PR" ]; then
+            gh pr create --base main --head "$BRANCH" --title "$TITLE" --body-file /tmp/qiqo-weekly-summary.md --reviewer "$REVIEWER" --assignee "$REVIEWER"
+          else
+            gh pr edit "$PR" --title "$TITLE" --body-file /tmp/qiqo-weekly-summary.md --add-reviewer "$REVIEWER" --add-assignee "$REVIEWER" || true
+          fi
