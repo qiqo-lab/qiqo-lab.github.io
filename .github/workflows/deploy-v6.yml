@@ -12,90 +12,22 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out main
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Reassemble and validate v6 package
+      - name: Diagnose packaged chunks
         shell: bash
         run: |
-          set -euo pipefail
           python3 - <<'PY'
           from pathlib import Path
-          import base64, io, itertools, re, zipfile
-
-          parts = sorted(Path('deploy-v6').glob('package.b64.part*'))
-          if not parts:
-              raise SystemExit('No package parts found')
-
-          candidate_sets = []
-          for p in parts:
-              raw = p.read_text(encoding='utf-8')
-              compact = ''.join(raw.split())
-              if re.fullmatch(r'[A-Za-z0-9+/=]+', compact):
-                  candidates = [compact]
-              else:
-                  runs = re.findall(r'[A-Za-z0-9+/=]{100,}', compact)
-                  candidates = []
-                  for run in runs:
-                      if run not in candidates:
-                          candidates.append(run)
-                  if not candidates:
-                      raise SystemExit(f'No base64 payload found in {p}')
-              print(f'{p}: raw={len(raw)} candidates={[len(x) for x in candidates]}')
-              candidate_sets.append(candidates)
-
-          attempts = 0
-          selected = None
-          for combo in itertools.product(*candidate_sets):
-              attempts += 1
-              payload = ''.join(combo)
-              try:
-                  data = base64.b64decode(payload, validate=True)
-                  bio = io.BytesIO(data)
-                  if not zipfile.is_zipfile(bio):
-                      continue
-                  bio.seek(0)
-                  with zipfile.ZipFile(bio) as zf:
-                      if zf.testzip() is not None:
-                          continue
-                      selected = (data, len(zf.infolist()))
-                      break
-              except Exception:
-                  continue
-
-          if selected is None:
-              raise SystemExit(f'No valid ZIP reconstruction found after {attempts} combinations')
-
-          data, entry_count = selected
-          out = Path('/tmp/qiqo-v6.zip')
-          out.write_bytes(data)
-          Path('/tmp/qiqo-v6').mkdir(parents=True, exist_ok=True)
-          with zipfile.ZipFile(out) as zf:
-              zf.extractall('/tmp/qiqo-v6')
-          print(f'Validated ZIP with {entry_count} entries after {attempts} reconstruction attempts')
+          import re
+          for p in sorted(Path('deploy-v6').glob('package.b64.part*')):
+              raw=p.read_text()
+              ms=list(re.finditer(r'[A-Za-z0-9+/=]{100,}', ''.join(raw.split())))
+              print(p, 'raw', len(raw), 'runs', [len(m.group(0)) for m in ms])
+              if len(raw)>10000:
+                  mraw=list(re.finditer(r'[A-Za-z0-9+/=]{100,}', raw))
+                  print('raw-runs', [(m.start(),m.end(),len(m.group(0))) for m in mraw])
+                  if len(mraw)>=2:
+                      print('gap=',repr(raw[mraw[0].end():mraw[1].start()]))
           PY
-
-      - name: Replace repository with validated v6 site
-        shell: bash
-        run: |
-          set -euo pipefail
-          rsync -a --delete \
-            --exclude='.git/' \
-            --exclude='.github/workflows/deploy-v6.yml' \
-            /tmp/qiqo-v6/ ./
-
-      - name: Commit v6 atomically
-        shell: bash
-        run: |
-          set -euo pipefail
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -A
-          if git diff --cached --quiet; then
-            echo 'Repository already matches v6.'
-            exit 0
-          fi
-          git commit -m 'Deploy QIQO website v6'
-          git push origin HEAD:main
