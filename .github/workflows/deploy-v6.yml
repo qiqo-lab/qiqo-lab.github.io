@@ -1,0 +1,49 @@
+name: Deploy QIQO website v6
+
+on:
+  push:
+    paths:
+      - 'deploy-v6/READY'
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out main
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Reassemble v6 package
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat deploy-v6/package.b64.part* | base64 --decode > /tmp/qiqo-v6.zip
+          mkdir -p /tmp/qiqo-v6
+          unzip -q /tmp/qiqo-v6.zip -d /tmp/qiqo-v6
+
+      - name: Replace repository with validated v6 site
+        shell: bash
+        run: |
+          set -euo pipefail
+          rsync -a --delete \
+            --exclude='.git/' \
+            --exclude='.github/workflows/deploy-v6.yml' \
+            /tmp/qiqo-v6/ ./
+
+      - name: Commit v6
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          if git diff --cached --quiet; then
+            echo 'Repository already matches v6.'
+            exit 0
+          fi
+          git commit -m 'Deploy QIQO website v6'
+          git push origin HEAD:main
