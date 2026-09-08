@@ -6,7 +6,7 @@ repository. A scheduled GitHub Action opens/refreshes a pull request and never
 merges it automatically.
 """
 from __future__ import annotations
-import argparse, datetime as dt, html, json, re, urllib.parse
+import argparse, datetime as dt, html, json, re, sys, urllib.parse
 from pathlib import Path
 import requests
 from bs4 import BeautifulSoup
@@ -70,7 +70,7 @@ def discover_crossref(existing):
             items=r.json()['message']['items']
         except Exception: continue
         for it in items:
-            title=clean_title((it.get('title') or [''])[0])
+            title=clean_title((it.get('title') or [''])[0]);
             if not title or norm(title) in existing: continue
             parts=(it.get('published-online') or it.get('published-print') or {}).get('date-parts',[[TODAY.year]])[0]
             year=int(parts[0]); authors=[]
@@ -162,7 +162,7 @@ def main():
     lines=['# Weekly QIQO website content review','',f'**Candidate changes:** {len(pubs)} publications · {len(news)} news items · {len(projects)} projects','']
     for label,items,key in [('Publications',pubs,'title'),('News',news,'title'),('Projects',projects,'acronym')]:
         if items:
-            lines+=['## '+label]+[f'- {x[key]}' for x in items[:10]]+(['- …'] if len(items)>10 else [])+['']
+            lines+=['## '+label]+[f'- {x[key]}' for x in items[:10]]+(['- …' ] if len(items)>10 else [])+['']
     if not pubs and not news and not projects: lines+=['No new candidate content was found this week.','']
     lines+=['## Review action','Merge this PR to publish the candidates. Close it if the candidates are not relevant; nothing is auto-merged. People/student changes remain manual.']
     if warnings: lines+=['','## Source warnings']+[f'- {w}' for w in warnings]

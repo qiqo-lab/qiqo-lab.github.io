@@ -47,3 +47,7 @@ The workflow needs repository Actions permissions that allow `contents: write` a
 ## Publishing with GitHub Pages
 
 When ready to launch, make the repository public and enable GitHub Pages from the `main` branch and `/ (root)`.
+## Licensing
+
+The website source code (HTML, CSS, JavaScript, Python scripts and GitHub Actions workflow files) is available under the MIT License. QIQO branding, the QIQO logo, photographs, written/editorial content, research descriptions, news content and other media assets are **not** covered by the MIT License. See `NOTICE.md` for details.
+
