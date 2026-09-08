@@ -17,13 +17,47 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Reassemble v6 package
+      - name: Reassemble and validate v6 package
         shell: bash
         run: |
           set -euo pipefail
-          cat deploy-v6/package.b64.part* | base64 --decode > /tmp/qiqo-v6.zip
-          mkdir -p /tmp/qiqo-v6
-          unzip -q /tmp/qiqo-v6.zip -d /tmp/qiqo-v6
+          python3 - <<'PY'
+          from pathlib import Path
+          import base64, re, zipfile
+
+          parts = sorted(Path('deploy-v6').glob('package.b64.part*'))
+          if not parts:
+              raise SystemExit('No package parts found')
+
+          chunks = []
+          for p in parts:
+              raw = p.read_text(encoding='utf-8')
+              compact = ''.join(raw.split())
+              if re.fullmatch(r'[A-Za-z0-9+/=]+', compact):
+                  chunk = compact
+              else:
+                  runs = re.findall(r'[A-Za-z0-9+/=]{100,}', compact)
+                  if not runs:
+                      raise SystemExit(f'No base64 payload found in {p}')
+                  chunk = max(runs, key=len)
+              print(f'{p}: raw={len(raw)} payload={len(chunk)}')
+              chunks.append(chunk)
+
+          payload = ''.join(chunks)
+          try:
+              data = base64.b64decode(payload, validate=True)
+          except Exception as exc:
+              raise SystemExit(f'Base64 validation failed: {exc}; payload length={len(payload)}')
+
+          out = Path('/tmp/qiqo-v6.zip')
+          out.write_bytes(data)
+          with zipfile.ZipFile(out) as zf:
+              bad = zf.testzip()
+              if bad:
+                  raise SystemExit(f'Corrupt ZIP member: {bad}')
+              zf.extractall('/tmp/qiqo-v6')
+              print(f'Validated ZIP with {len(zf.infolist())} entries')
+          PY
 
       - name: Replace repository with validated v6 site
         shell: bash
@@ -34,7 +68,7 @@ jobs:
             --exclude='.github/workflows/deploy-v6.yml' \
             /tmp/qiqo-v6/ ./
 
-      - name: Commit v6
+      - name: Commit v6 atomically
         shell: bash
         run: |
           set -euo pipefail
