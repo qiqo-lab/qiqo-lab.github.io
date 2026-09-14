@@ -17,7 +17,7 @@
 .partner-logo img{display:block;object-fit:contain;width:auto;height:42px}
 .partner-logo-ipfn img{height:52px}
 .header-logos a:focus-visible{outline:2px solid var(--violet);outline-offset:5px;border-radius:3px}
-@media(max-width:1180px){
+@media(max-width:1280px){
  .nav-toggle{display:block;margin-left:auto;flex-shrink:0}
  .main-nav{display:none;position:absolute;top:78px;left:20px;right:20px;background:#fff;padding:12px;border-radius:18px;box-shadow:var(--shadow);flex-direction:column;align-items:stretch}
  .main-nav.open{display:flex}
@@ -26,15 +26,15 @@
 @media(max-width:560px){
  .nav-wrap{gap:8px}
  .header-logos{gap:10px}
- .header-logos .brand-logo{height:30px}
+ .header-logos .brand-logo{height:20px}
  .partner-logos{gap:8px;padding-left:10px}
- .partner-logo img{height:26px}
- .partner-logo-ipfn img{height:34px}
+ .partner-logo img{height:22px}
+ .partner-logo-ipfn img{height:28px}
 }
 @media(max-width:360px){
  .header-logos{gap:7px}
- .header-logos .brand-logo{height:26px}
+ .header-logos .brand-logo{height:18px}
  .partner-logos{gap:6px;padding-left:7px}
- .partner-logo img{height:23px}
- .partner-logo-ipfn img{height:30px}
+ .partner-logo img{height:19px}
+ .partner-logo-ipfn img{height:24px}
 }
