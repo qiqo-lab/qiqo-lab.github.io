@@ -1,2 +1,4 @@
 User-agent: *
 Allow: /
+
+Sitemap: https://qiqo-lab.github.io/sitemap.xml

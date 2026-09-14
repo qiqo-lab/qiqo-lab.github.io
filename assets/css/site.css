@@ -38,3 +38,5 @@
  .partner-logo img{height:19px}
  .partner-logo-ipfn img{height:24px}
 }
+
+.hero h1 .hero-subtitle{display:block;margin-top:18px;font-size:clamp(29px,3.4vw,48px);line-height:1.15;letter-spacing:-.035em;color:inherit}

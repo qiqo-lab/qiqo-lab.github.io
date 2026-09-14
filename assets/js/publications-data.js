@@ -1,5 +1,6 @@
 window.QIQO_DATA=window.QIQO_DATA||{};
 window.QIQO_DATA.publications=[
+{"year": 2026, "title": "A Survey on Quantum-Safe Cryptographic Mechanisms: Building Blocks and Applications", "authors": "Ricardo Parizotto, Preeti Yadav, Marcus Freire, Anderson Tomkelski, Maycon Peixoto, Emmanuel Zambrini Cruzeiro, Israat Haque", "venue": "arXiv:2609.11991 (preprint)", "url": "https://arxiv.org/abs/2609.11991", "topic": "Quantum communication"},
 {year:2026,title:"Perfect Games in Dimension-Bounded Communication",authors:"E. Zambrini Cruzeiro et al.",venue:"arXiv:2608.05092 (preprint)",url:"https://arxiv.org/abs/2608.05092",topic:"Quantum foundations"},
 {year:2026,title:"Daylight quantum keyless private communication for free-space links",authors:"P. Neto Mendes, P. Yadav, L. Sumares, H. Zbinden, D. Rusca, E. Zambrini Cruzeiro",venue:"arXiv:2607.03527 (preprint)",url:"https://arxiv.org/abs/2607.03527",topic:"Quantum communication"},
 {year:2026,title:"Exploring Bell Nonlocality with Extremal Non-Signaling Boxes",authors:"E. Zambrini Cruzeiro et al.",venue:"arXiv:2601.08924 (preprint)",url:"https://arxiv.org/abs/2601.08924",topic:"Quantum foundations"},

@@ -79,6 +79,6 @@ window.QIQO_DATA = {
   ],
   facilities:[
     {title:"Quantum Photonics Laboratory (QuLab)",owner:"Instituto de Telecomunicações",image:"assets/img/labs/qulab.jpg",text:"Photonic and quantum-communication infrastructure for foundational tests, secure communications, high-dimensional optics, free-space links and optical-memory development.",url:"https://www.it.pt/Laboratories/Index/2047"},
-    {title:"Quantum Matter / Magneto-Optical-Trap Laboratory (QuantMatt/MOTLab)",owner:"GoLP / Instituto de Plasmas e Fusão Nuclear",image:"assets/img/labs/quantmatt-motlab.jpg",text:"Cold-atom and quantum-matter infrastructure supporting quantum simulation, quantum fluids, many-body physics and links between plasma physics and quantum technologies.",url:"https://www.ipfn.tecnico.ulisboa.pt/"}
+    {title:"Quantum Matter / Magneto-Optical-Trap Laboratory (QuMatt/MOTLab)",owner:"GoLP / Instituto de Plasmas e Fusão Nuclear",image:"assets/img/labs/qumatt-motlab.jpg",text:"Cold-atom and quantum-matter infrastructure supporting quantum simulation, quantum fluids, many-body physics and links between plasma physics and quantum technologies.",url:"https://www.ipfn.tecnico.ulisboa.pt/"}
   ]
 };

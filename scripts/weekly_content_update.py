@@ -21,7 +21,7 @@ HEADERS={'User-Agent':'QIQO-website-weekly-review/1.0 (+https://github.com/qiqo-
 TODAY=dt.date.today(); CUTOFF=TODAY-dt.timedelta(days=45)
 ARXIV_AUTHORS=['Emmanuel Zambrini Cruzeiro','Hugo Tercas','Preeti Yadav','Flavien Hirsch','Ricardo Faleiro','Pedro Neto Mendes','Goncalo Teixeira','Jose Senart','Jose Luis Figueiredo','Carlo Alfisi']
 ORCIDS=['0000-0003-3418-9131','0000-0003-2826-4377','0009-0004-1924-0407','0000-0002-4155-7396']
-KEYWORDS=['qiqo','qulab','quantmatt','motlab','quantum','keyless','qkpc','qkd','iberianqci','qsnp','quantumpuf','cold atom','ultracold','plasmon','axion','faleiro','hirsch','yadav','terças','tercas','cruzeiro']
+KEYWORDS=['qiqo','qulab','qumatt','motlab','quantum','keyless','qkpc','qkd','iberianqci','qsnp','quantumpuf','cold atom','ultracold','plasmon','axion','faleiro','hirsch','yadav','terças','tercas','cruzeiro']
 SOURCE_WARNINGS=[]
 
 def source_warning(source, error):
@@ -37,10 +37,13 @@ def existing_titles():
 def existing_urls(path): return set(re.findall(r'(?:"?url"?)\s*:\s*"([^"]+)"',path.read_text(encoding='utf-8')))
 def append_objects(path, objs):
     if not objs:return
-    txt=path.read_text(encoding='utf-8'); idx=txt.rfind('];')
+    txt=path.read_text(encoding='utf-8')
+    # The supplementary catalogue uses publications.push(...), not an array assignment.
+    terminator=');' if 'window.QIQO_DATA.publications.push(' in txt else '];'
+    idx=txt.rfind(terminator)
     if idx<0: raise RuntimeError(f'Cannot find array terminator in {path}')
     before=txt[:idx].rstrip()
-    if not before.endswith('['): before+=','
+    if not before.endswith(('[','(')): before+=','
     payload=',\n'.join(json.dumps(o,ensure_ascii=False,separators=(',',':')) for o in objs)
     path.write_text(before+'\n'+payload+'\n'+txt[idx:],encoding='utf-8')
 def classify(title):
@@ -53,6 +56,7 @@ def classify(title):
 def clean_title(s): return re.sub(r'\s+',' ',html.unescape(s or '')).strip()
 
 def discover_arxiv(existing):
+    known_ids=set(re.findall(r'arxiv\.org/abs/(\d{4}\.\d{4,5})', '\n'.join(p.read_text(encoding='utf-8') for p in (PUBS,MEMBER_PUBS)), re.I))
     q=' OR '.join(f'au:"{a}"' for a in ARXIV_AUTHORS)
     url='https://export.arxiv.org/api/query?'+urllib.parse.urlencode({'search_query':q,'start':0,'max_results':80,'sortBy':'submittedDate','sortOrder':'descending'})
     r=requests.get(url,headers=HEADERS,timeout=30); r.raise_for_status()
@@ -64,6 +68,9 @@ def discover_arxiv(existing):
         if d<CUTOFF or norm(title) in existing: continue
         authors=', '.join(a.findtext('a:name','',ns) for a in e.findall('a:author',ns))
         absurl=e.findtext('a:id','',ns); arxivid=absurl.rsplit('/',1)[-1]
+        stable_id=re.sub(r'v\d+$','',arxivid)
+        if stable_id in known_ids: continue
+        known_ids.add(stable_id)
         out.append({'year':d.year,'title':title,'authors':authors,'venue':f'arXiv:{arxivid} (preprint)','url':absurl,'topic':classify(title)})
         existing.add(norm(title))
     return out

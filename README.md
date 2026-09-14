@@ -11,7 +11,7 @@ Static website for the **Quantum Information & Quantum Optics (QIQO) Laboratory*
 - Main publication catalogue: `assets/js/publications-data.js`.
 - Additional current-member publications: `assets/js/member-publications-data.js`.
 - Projects and their start/end dates: `assets/js/projects-data.js`.
-- QIQO / QuLab / QuantMatt/MOTLab news: `assets/js/news-data.js`.
+- QIQO / QuLab / QuMatt/MOTLab news: `assets/js/news-data.js`.
 - Styling: `assets/css/site.css`.
 - Navigation, footer, filtering and data-driven rendering: `assets/js/site.js`.
 
@@ -52,3 +52,13 @@ When ready to launch, make the repository public and enable GitHub Pages from th
 ## Licensing
 
 The website source code (HTML, CSS, JavaScript, Python scripts and GitHub Actions workflow files) is available under the MIT License. QIQO branding, the QIQO logo, photographs, written/editorial content, research descriptions, news content and other media assets are **not** covered by the MIT License. See `NOTICE.md` for details.
+
+## Search visibility and static HTML
+
+The nine main pages have canonical URLs, unique titles and descriptions, Open Graph / Twitter metadata, and JSON-LD. The homepage identifies QIQO and its institutional parents. `sitemap.xml` lists the canonical pages and is advertised in `robots.txt`; no guessed or automatically refreshed modification dates are emitted.
+
+Navigation, publications and news are also included directly in HTML. After editing the data files, run `python scripts/render_static_content.py` (requires Node.js and beautifulsoup4). The weekly review workflow does this before opening its PR and includes the changed publication/news pages. JavaScript continues to handle filters and mobile navigation. The renderer is deterministic and can be rerun safely.
+
+To finish Google setup, add a URL-prefix property for `https://qiqo-lab.github.io/` in Google Search Console. Use its HTML file or HTML meta-tag verification method; publish the exact file/tag supplied by Google, then click Verify. Submit `sitemap.xml` and request indexing of the homepage and key pages. Keep the verification file/tag in place. Indexing and ranking are controlled by Google and are not guaranteed by submission.
+
+Ask the maintainers of the official IT QIQO announcement, QuLab, QPI, IPFN/GoLP and Técnico pages to link to `https://qiqo-lab.github.io/` with the anchor text “QIQO — Quantum Information and Quantum Optics Laboratory”. These institutional records are managed outside this repository.

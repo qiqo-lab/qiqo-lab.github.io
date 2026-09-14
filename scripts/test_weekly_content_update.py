@@ -1,5 +1,8 @@
 """Regression checks for duplicate projects and incomplete source scans."""
 import unittest
+import tempfile
+import subprocess
+from pathlib import Path
 from unittest.mock import Mock, patch
 import weekly_content_update as scan
 
@@ -11,6 +14,14 @@ def response(text):
 class WeeklyScanTests(unittest.TestCase):
     def setUp(self):
         scan.SOURCE_WARNINGS.clear()
+
+    def test_append_to_supplementary_publications_push(self):
+        with tempfile.TemporaryDirectory() as d:
+            path=Path(d)/'members.js'
+            path.write_text('window.QIQO_DATA.publications.push(\n{title:"Old"}\n);\n')
+            scan.append_objects(path,[{'title':'New'}])
+            self.assertIn('"New"',path.read_text())
+            subprocess.run(['node','--check',str(path)],check=True,capture_output=True)
 
     def test_project_with_existing_acronym_and_new_url_is_not_added(self):
         index = response('<a href="/Projects/Index/4927">ComSense</a>')

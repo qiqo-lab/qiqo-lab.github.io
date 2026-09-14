@@ -44,6 +44,9 @@ jobs:
       - name: Scan trusted sources
         run: python scripts/weekly_content_update.py --summary /tmp/qiqo-weekly-summary.md
 
+      - name: Refresh crawlable publication and news HTML
+        run: python scripts/render_static_content.py
+
       - name: Show concise review summary
         run: cat /tmp/qiqo-weekly-summary.md >> "$GITHUB_STEP_SUMMARY"
 
@@ -57,6 +60,9 @@ jobs:
             assets/js/member-publications-data.js
             assets/js/news-data.js
             assets/js/projects-data.js
+            index.html
+            publications.html
+            news.html
           retention-days: 30
 
       - name: Open or refresh human-review PR
@@ -71,7 +77,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -B "$BRANCH"
-          git add assets/js/publications-data.js assets/js/member-publications-data.js assets/js/news-data.js assets/js/projects-data.js
+          git add assets/js/publications-data.js assets/js/member-publications-data.js assets/js/news-data.js assets/js/projects-data.js index.html publications.html news.html
           if git diff --cached --quiet; then
             echo "No candidate content changes; no PR needed."
             exit 0
