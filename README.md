@@ -31,7 +31,7 @@ Edit `assets/js/news-data.js`. Keep newest items first; the homepage automatical
 
 ## Weekly human-reviewed auto-update
 
-`.github/workflows/weekly-content-review.yml` runs every Monday at **08:00 UTC** and can also be run manually from the GitHub Actions tab. It runs `scripts/weekly_content_update.py`, which scans approved sources including arXiv, Crossref, IT and IPFN for candidate publications, news and projects.
+`.github/workflows/weekly-content-review.yml` runs every Monday at **08:17 UTC** and can also be run manually from the GitHub Actions tab. It runs `scripts/weekly_content_update.py`, which scans approved sources including arXiv, Crossref, IT and IPFN for candidate publications, news and projects.
 
 If candidates are found, the workflow opens or refreshes a pull request on `automation/weekly-content-review`, assigns and requests review from `EmmanuelZambriniCruzeiro`, and places a concise summary in the PR body:
 
@@ -44,7 +44,7 @@ If candidates are found, the workflow opens or refreshes a pull request on `auto
 
 The workflow explicitly requests `contents: write` and `pull-requests: write`. Separately, enable **Settings → Actions → General → Workflow permissions → Allow GitHub Actions to create and approve pull requests** and click **Save**. An organization policy may also need to allow this. The workflow never approves or merges PRs. This repository setting cannot be enabled from workflow YAML.
 
-Scanner/workflow fixes pushed to `main` also run the check immediately. Every run preserves its summary and candidate data as a 30-day Actions artifact before trying to open a PR. PR creation/refresh failures remain visible; assignment failures are warnings. Source failures are listed explicitly in the summary. Projects are deduplicated by acronym as well as URL; news without a verifiable recent date is skipped. The scanner discovers additions, not changes to existing publication metadata or project dates; these still need editorial review.
+Scanner/workflow fixes pushed to `main` run tests only, with read-only permissions; they never scan live sources or create/refresh review PRs. Every run preserves its summary and candidate data as a 30-day Actions artifact before trying to open a PR. PR creation/refresh failures remain visible; assignment failures are warnings. Source failures are listed explicitly in the summary. Projects are deduplicated by acronym as well as URL; news without a verifiable recent date is skipped. The scanner discovers additions, not changes to existing publication metadata or project dates; these still need editorial review.
 
 ## Publishing with GitHub Pages
 
@@ -62,3 +62,9 @@ Navigation, publications and news are also included directly in HTML. After edit
 To finish Google setup, add a URL-prefix property for `https://qiqo-lab.github.io/` in Google Search Console. Use its HTML file or HTML meta-tag verification method; publish the exact file/tag supplied by Google, then click Verify. Submit `sitemap.xml` and request indexing of the homepage and key pages. Keep the verification file/tag in place. Indexing and ranking are controlled by Google and are not guaranteed by submission.
 
 Ask the maintainers of the official IT QIQO announcement, QuLab, QPI, IPFN/GoLP and Técnico pages to link to `https://qiqo-lab.github.io/` with the anchor text “QIQO — Quantum Information and Quantum Optics Laboratory”. These institutional records are managed outside this repository.
+
+### Duplicate-review prevention
+
+Scheduled and manual reviews run separately from push-triggered tests. The Monday schedule is 08:17 UTC (09:17 in Lisbon during summer, 08:17 during winter); GitHub can still delay scheduled jobs. Before scanning and again before writing a PR, the workflow checks paginated closed PRs for a content review already merged that calendar day in Europe/Lisbon. This includes reviews created through the connected account. Both scheduled and manual runs skip if a matching merged review exists; the reason appears in the Actions summary.
+
+A PR is only created/refreshed when the scanner changes a publication, news or project data file. HTML serialization changes alone do not generate a review. The scanner report and source warnings remain available in the Actions summary and artifact when a scan runs without candidates.
