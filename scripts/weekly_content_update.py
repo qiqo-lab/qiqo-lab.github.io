@@ -19,9 +19,16 @@ NEWS=ROOT/'assets/js/news-data.js'
 PROJECTS=ROOT/'assets/js/projects-data.js'
 HEADERS={'User-Agent':'QIQO-website-weekly-review/1.0 (+https://github.com/qiqo-lab/qiqo-lab.github.io)'}
 TODAY=dt.date.today(); CUTOFF=TODAY-dt.timedelta(days=45)
-ARXIV_AUTHORS=['Emmanuel Zambrini Cruzeiro','Hugo Tercas','Preeti Yadav','Flavien Hirsch','Ricardo Faleiro','Pedro Neto Mendes','Goncalo Teixeira','Jose Senart','Jose Luis Figueiredo','Carlo Alfisi','Theo Abounnasr Martins']
+ARXIV_AUTHORS=['Emmanuel Zambrini Cruzeiro','Hugo Tercas','Preeti Yadav','Flavien Hirsch','Ricardo Faleiro','Pedro Neto Mendes','Goncalo Teixeira','Jose Senart','Jose Luis Figueiredo','Carlo Alfisi']
 ORCIDS=['0000-0003-3418-9131','0000-0003-2826-4377','0009-0004-1924-0407','0000-0002-4155-7396']
 KEYWORDS=['qiqo','qulab','quantmatt','motlab','quantum','keyless','qkpc','qkd','iberianqci','qsnp','quantumpuf','cold atom','ultracold','plasmon','axion','faleiro','hirsch','yadav','terças','tercas','cruzeiro']
+SOURCE_WARNINGS=[]
+
+def source_warning(source, error):
+    SOURCE_WARNINGS.append(f'{source}: {error}')
+
+def existing_project_acronyms():
+    return {norm(x) for x in re.findall(r'(?:"?acronym"?)\s*:\s*"([^"]+)"', PROJECTS.read_text(encoding='utf-8'))}
 
 def norm(s): return re.sub(r'\W+',' ',s.lower()).strip()
 def existing_titles():
@@ -68,7 +75,9 @@ def discover_crossref(existing):
         try:
             r=requests.get('https://api.crossref.org/works',params=params,headers=HEADERS,timeout=25); r.raise_for_status()
             items=r.json()['message']['items']
-        except Exception: continue
+        except Exception as e:
+            source_warning(f'Crossref ORCID {orcid}', e)
+            continue
         for it in items:
             title=clean_title((it.get('title') or [''])[0]);
             if not title or norm(title) in existing: continue
@@ -99,14 +108,19 @@ def news_candidate(url):
     desc=clean_title(meta.get('content','') if meta else '')
     if not desc:
         p=soup.find('p'); desc=clean_title(p.get_text(' ',strip=True) if p else '')[:360]
-    text=clean_title(soup.get_text(' ',strip=True)); d=extract_date(text) or TODAY
+    text=clean_title(soup.get_text(' ',strip=True)); d=extract_date(text)
+    if d is None:
+        source_warning(url, 'No verifiable news date; skipped')
+        return None
     return {'date':d.isoformat(),'title':title,'text':desc[:420],'url':url}
 def discover_news(existing):
     out=[]; pages=['https://www.it.pt/News','https://www.ipfn.tecnico.ulisboa.pt/news-and-events/news']
     for page in pages:
         try:
             r=requests.get(page,headers=HEADERS,timeout=20);r.raise_for_status();soup=BeautifulSoup(r.text,'html.parser')
-        except Exception: continue
+        except Exception as e:
+            source_warning(page, e)
+            continue
         links=[]
         for a in soup.find_all('a',href=True):
             u=urllib.parse.urljoin(page,a['href'])
@@ -116,16 +130,21 @@ def discover_news(existing):
             label=clean_title(next((a.get_text(' ',strip=True) for a in soup.find_all('a',href=True) if urllib.parse.urljoin(page,a['href'])==u),''))
             if label and not any(k in label.lower() for k in KEYWORDS): continue
             try: c=news_candidate(u)
-            except Exception: continue
+            except Exception as e:
+                source_warning(u, e)
+                continue
+            if c is None or not CUTOFF.isoformat() <= c['date'] <= TODAY.isoformat(): continue
             hay=(c['title']+' '+c['text']).lower()
             if any(k in hay for k in KEYWORDS): out.append(c); existing.add(u)
     out.sort(key=lambda x:x['date'],reverse=True); return out
 
 def discover_projects(existing):
-    out=[]
+    out=[]; acronyms=existing_project_acronyms()
     try:
         r=requests.get('https://www.it.pt/Members/Index/34614',headers=HEADERS,timeout=25);r.raise_for_status();soup=BeautifulSoup(r.text,'html.parser')
-    except Exception:return out
+    except Exception as e:
+        source_warning('IT project index', e)
+        return out
     urls=[]
     for a in soup.find_all('a',href=True):
         u=urllib.parse.urljoin(r.url,a['href'])
@@ -137,19 +156,20 @@ def discover_projects(existing):
             h=ss.find('h1'); acronym=clean_title(h.get_text(' ',strip=True) if h else '')
             mtitle=re.search(r'PROJECT:\s*(.*?)\s+ACRONYM:',text,re.I); title=mtitle.group(1).strip() if mtitle else acronym
             mac=re.search(r'ACRONYM:\s*(.*?)\s+MAIN OBJECTIVE:',text,re.I); acronym=mac.group(1).strip() if mac else acronym
+            if not acronym or norm(acronym) in acronyms: continue
             md=re.search(r'Start Date:\s*(\d{2})-(\d{2})-(\d{4}).*?End Date:\s*(\d{2})-(\d{2})-(\d{4})',text,re.I)
             if not md:continue
             start=f'{md.group(3)}-{md.group(2)}-{md.group(1)}'; end=f'{md.group(6)}-{md.group(5)}-{md.group(4)}'
             mf=re.search(r'Funding:\s*(.*?)\s+Start Date:',text,re.I); funder=(mf.group(1).strip() if mf else 'Official IT project')[:120]
             obj=re.search(r'MAIN OBJECTIVE:\s*(.*?)\s+Reference:',text,re.I); summary=(obj.group(1).strip() if obj else title)[:420]
-            out.append({'acronym':acronym,'title':title,'funder':funder,'startDate':start,'endDate':end,'dates':f'{start}–{end}','scope':'QuLab / IT','text':summary,'url':u});existing.add(u)
-        except Exception:continue
+            out.append({'acronym':acronym,'title':title,'funder':funder,'startDate':start,'endDate':end,'dates':f'{start}–{end}','scope':'QuLab / IT','text':summary,'url':u});existing.add(u);acronyms.add(norm(acronym))
+        except Exception as e:source_warning(u, e)
     return out
 
 def main():
     ap=argparse.ArgumentParser();ap.add_argument('--summary',default='/tmp/qiqo-weekly-summary.md');args=ap.parse_args()
     titles=existing_titles(); news_urls=existing_urls(NEWS); project_urls=existing_urls(PROJECTS)
-    warnings=[]
+    SOURCE_WARNINGS.clear(); warnings=SOURCE_WARNINGS
     try: pubs=discover_arxiv(titles)
     except Exception as e: pubs=[];warnings.append(f'arXiv: {e}')
     try: pubs+=discover_crossref(titles)
@@ -159,13 +179,13 @@ def main():
     try: projects=discover_projects(project_urls)
     except Exception as e: projects=[];warnings.append(f'project scan: {e}')
     append_objects(MEMBER_PUBS,pubs); append_objects(NEWS,news); append_objects(PROJECTS,projects)
-    lines=['# Weekly QIQO website content review','',f'**Candidate changes:** {len(pubs)} publications · {len(news)} news items · {len(projects)} projects','']
+    lines=['# Weekly QIQO website content review','',f'Checked on {TODAY.isoformat()} (UTC); publication/news window starts {CUTOFF.isoformat()}.','',f'**Candidate changes:** {len(pubs)} publications · {len(news)} news items · {len(projects)} projects','']
     for label,items,key in [('Publications',pubs,'title'),('News',news,'title'),('Projects',projects,'acronym')]:
         if items:
-            lines+=['## '+label]+[f'- {x[key]}' for x in items[:10]]+(['- …' ] if len(items)>10 else [])+['']
-    if not pubs and not news and not projects: lines+=['No new candidate content was found this week.','']
+            lines+=['## '+label]+[f'- [{x[key]}]({x["url"]})' for x in items]+['']
+    if not pubs and not news and not projects: lines+=['No new candidates were found in the sources successfully checked.','']
     lines+=['## Review action','Merge this PR to publish the candidates. Close it if the candidates are not relevant; nothing is auto-merged. People/student changes remain manual.']
-    if warnings: lines+=['','## Source warnings']+[f'- {w}' for w in warnings]
+    if warnings: lines+=['','## Source warnings','The check is incomplete for the sources listed below; absence of candidates is not evidence that those sources have no updates.']+[f'- {w}' for w in warnings]
     Path(args.summary).write_text('\n'.join(lines)+'\n',encoding='utf-8')
     print('\n'.join(lines))
 if __name__=='__main__': main()

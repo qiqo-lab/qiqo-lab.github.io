@@ -4,6 +4,12 @@ on:
   schedule:
     - cron: "0 8 * * 1"  # Monday 08:00 UTC
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/weekly-content-review.yml
+      - scripts/weekly_content_update.py
+      - scripts/test_weekly_content_update.py
 
 permissions:
   contents: write
@@ -16,10 +22,12 @@ concurrency:
 jobs:
   review:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Check out main
         uses: actions/checkout@v4
         with:
+          ref: main
           fetch-depth: 0
 
       - name: Set up Python
@@ -30,17 +38,33 @@ jobs:
       - name: Install scanner dependencies
         run: python -m pip install --disable-pip-version-check requests beautifulsoup4
 
+      - name: Check scanner regressions
+        run: python -m unittest discover -s scripts -p 'test_*.py'
+
       - name: Scan trusted sources
         run: python scripts/weekly_content_update.py --summary /tmp/qiqo-weekly-summary.md
 
       - name: Show concise review summary
         run: cat /tmp/qiqo-weekly-summary.md >> "$GITHUB_STEP_SUMMARY"
 
+      - name: Preserve review even if PR creation is blocked
+        uses: actions/upload-artifact@v4
+        with:
+          name: qiqo-weekly-review-${{ github.run_id }}
+          path: |
+            /tmp/qiqo-weekly-summary.md
+            assets/js/publications-data.js
+            assets/js/member-publications-data.js
+            assets/js/news-data.js
+            assets/js/projects-data.js
+          retention-days: 30
+
       - name: Open or refresh human-review PR
         env:
           GH_TOKEN: ${{ github.token }}
           REVIEWER: EmmanuelZambriniCruzeiro
           BRANCH: automation/weekly-content-review
+          GH_REPO: ${{ github.repository }}
         shell: bash
         run: |
           set -euo pipefail
@@ -53,11 +77,19 @@ jobs:
             exit 0
           fi
           git commit -m "Weekly QIQO content candidates"
-          git push --force origin "$BRANCH"
+          git push --force-with-lease origin "$BRANCH"
           PR="$(gh pr list --head "$BRANCH" --base main --state open --json number --jq '.[0].number // empty')"
           TITLE="Weekly QIQO content review — $(date -u +%Y-%m-%d)"
           if [ -z "$PR" ]; then
-            gh pr create --base main --head "$BRANCH" --title "$TITLE" --body-file /tmp/qiqo-weekly-summary.md --reviewer "$REVIEWER" --assignee "$REVIEWER"
+            if ! gh pr create --base main --head "$BRANCH" --title "$TITLE" --body-file /tmp/qiqo-weekly-summary.md; then
+              echo "::error::PR creation failed. If GitHub reports Actions is not permitted to create pull requests, enable 'Allow GitHub Actions to create and approve pull requests' in Settings > Actions > General. The review branch and artifact have been preserved."
+              echo "PR creation failed. Review the log; candidates are preserved in the artifact and [$BRANCH](https://github.com/$GH_REPO/compare/main...$BRANCH)." >> "$GITHUB_STEP_SUMMARY"
+              exit 1
+            fi
+            PR="$(gh pr list --head "$BRANCH" --base main --state open --json number --jq '.[0].number')"
           else
-            gh pr edit "$PR" --title "$TITLE" --body-file /tmp/qiqo-weekly-summary.md --add-reviewer "$REVIEWER" --add-assignee "$REVIEWER" || true
+            gh api --method PATCH "repos/$GH_REPO/pulls/$PR" -f title="$TITLE" -F body=@/tmp/qiqo-weekly-summary.md > /dev/null
           fi
+          echo "[Review pull request #$PR](https://github.com/$GH_REPO/pull/$PR)" >> "$GITHUB_STEP_SUMMARY"
+          gh api --method POST "repos/$GH_REPO/issues/$PR/assignees" -f "assignees[]=$REVIEWER" > /dev/null || echo "::warning::PR exists, but assigning the reviewer failed."
+          gh api --method POST "repos/$GH_REPO/pulls/$PR/requested_reviewers" -f "reviewers[]=$REVIEWER" > /dev/null || echo "::warning::PR exists, but requesting review failed."

@@ -42,7 +42,9 @@ If candidates are found, the workflow opens or refreshes a pull request on `auto
 
 **Nothing is merged automatically.** Merge the PR to publish the proposed content or close it to reject the weekly candidates. People/student changes remain manual.
 
-The workflow needs repository Actions permissions that allow `contents: write` and `pull-requests: write`. If GitHub blocks the first PR creation, enable **Settings → Actions → General → Workflow permissions → Read and write permissions** and allow GitHub Actions to create pull requests.
+The workflow explicitly requests `contents: write` and `pull-requests: write`. Separately, enable **Settings → Actions → General → Workflow permissions → Allow GitHub Actions to create and approve pull requests** and click **Save**. An organization policy may also need to allow this. The workflow never approves or merges PRs. This repository setting cannot be enabled from workflow YAML.
+
+Scanner/workflow fixes pushed to `main` also run the check immediately. Every run preserves its summary and candidate data as a 30-day Actions artifact before trying to open a PR. PR creation/refresh failures remain visible; assignment failures are warnings. Source failures are listed explicitly in the summary. Projects are deduplicated by acronym as well as URL; news without a verifiable recent date is skipped. The scanner discovers additions, not changes to existing publication metadata or project dates; these still need editorial review.
 
 ## Publishing with GitHub Pages
 
@@ -50,4 +52,3 @@ When ready to launch, make the repository public and enable GitHub Pages from th
 ## Licensing
 
 The website source code (HTML, CSS, JavaScript, Python scripts and GitHub Actions workflow files) is available under the MIT License. QIQO branding, the QIQO logo, photographs, written/editorial content, research descriptions, news content and other media assets are **not** covered by the MIT License. See `NOTICE.md` for details.
-
