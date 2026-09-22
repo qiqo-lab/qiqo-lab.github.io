@@ -35,8 +35,18 @@ def render_news(items,home=False):
     if home:return ''.join(f'<a class="news-line" href="{esc(n["url"])}" target="_blank" rel="noreferrer"><time>{date(n["date"])}</time><strong>{esc(n["title"])}</strong><span>↗</span></a>' for n in items[:3])
     return ''.join(f'<article class="news-card"><time datetime="{esc(n["date"])}">{date(n["date"])}</time><h3>{esc(n["title"])}</h3><p>{esc(n["text"])}</p><a class="text-link" href="{esc(n["url"])}" target="_blank" rel="noreferrer">Read source ↗</a></article>' for n in items)
 
+def render_people(items,large=False):
+    cards=[]
+    for p in items:
+        avatar=(f'<img class="avatar avatar-photo" src="{esc(p["image"])}" alt="{esc(p["name"])}" loading="lazy">' if p.get('image') else f'<div class="avatar" aria-hidden="true">{esc(p["initials"])}</div>')
+        links=([{'url':p['url'],'label':p.get('urlLabel','Profile')}] if p.get('url') else [])+p.get('links',[])
+        buttons=''.join(f'<a class="mini-link" href="{esc(x["url"])}" target="_blank" rel="noreferrer">{esc(x["label"])} ↗</a>' for x in links)
+        card_class='person-card person-card-large' if large else 'person-card'
+        cards.append(f'<article class="{card_class}">{avatar}<div class="person-copy"><span class="eyebrow">{esc(p["role"])}</span><h3>{esc(p["name"])}</h3><p class="muted">{esc(p.get("affiliation") or p.get("team") or "")}</p><p>{esc(p.get("focus",""))}</p><div class="mini-links">{buttons}</div></div></article>')
+    return ''.join(cards)
+
 def main():
-    code="""const fs=require('fs'),vm=require('vm');const c={window:{}};vm.createContext(c);for(const f of ['data.js','publications-data.js','member-publications-data.js','news-data.js'])vm.runInContext(fs.readFileSync('assets/js/'+f,'utf8'),c);process.stdout.write(JSON.stringify(c.window.QIQO_DATA));"""
+    code="""const fs=require('fs'),vm=require('vm');const c={window:{}};vm.createContext(c);for(const f of ['data.js','people-data.js','publications-data.js','member-publications-data.js','news-data.js'])vm.runInContext(fs.readFileSync('assets/js/'+f,'utf8'),c);process.stdout.write(JSON.stringify(c.window.QIQO_DATA));"""
     data=json.loads(subprocess.check_output(['node','-e',code],cwd=ROOT,text=True))
     for _,_,filename in NAV:
         path=ROOT/filename;soup=BeautifulSoup(path.read_text(encoding='utf-8'),'html.parser')
@@ -44,5 +54,7 @@ def main():
         put(soup,'[data-publications]',render_pubs(data['publications']))
         put(soup,'[data-news]',render_news(data['news']))
         put(soup,'[data-home-news]',render_news(data['news'],True))
+        for selector,key,large in [('data-leadership','leadership',True),('data-postdocs','postdocs',False),('data-phd-students','phdStudents',False),('data-master-students','masterStudents',False),('data-steering','steering',True),('data-alumni','alumni',False)]:
+            put(soup,f'[{selector}]',render_people(data.get(key,[]),large))
         path.write_text(str(soup).rstrip()+'\n',encoding='utf-8')
 if __name__=='__main__':main()

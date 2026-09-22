@@ -18,7 +18,7 @@ Static website for the **Quantum Information & Quantum Optics (QIQO) Laboratory*
 ## Updating content
 
 ### People
-Edit `assets/js/people-data.js`. Leadership and the Steering Board are in `assets/js/data.js`. Personnel changes remain human-managed rather than inferred automatically.
+Edit `assets/js/people-data.js`, including `masterStudents` for current Master's students and `alumni` for completed Master's supervisions and co-supervisions. Alumni appear last on the People page. Leadership and the Steering Board are in `assets/js/data.js`. Run `python scripts/render_static_content.py` after editing so the People page also works without JavaScript. Personnel changes remain human-managed rather than inferred automatically.
 
 ### Publications
 Edit `assets/js/publications-data.js` or `assets/js/member-publications-data.js`. The website automatically groups papers by year and builds the topic filters.

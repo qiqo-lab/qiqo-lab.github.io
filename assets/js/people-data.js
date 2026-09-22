@@ -12,6 +12,20 @@ window.QIQO_DATA.phdStudents=[
 {name:"Carlo Alfisi",role:"PhD Student",team:"QuMatt/MOTLab / IST · Hugo Terças",initials:"CA",image:"assets/img/people/carlo-alfisi.jpg",focus:"Plasmonic metamaterials and low-energy particle detection, including WIMP/neutrino sensing concepts.",url:"https://plasmas.tecnico.ulisboa.pt/research?page=3"}
 ];
 window.QIQO_DATA.masterStudents=[
-{name:"Dinis Rodrigues Fernandes Alves Felgueiras",role:"MSc Student",team:"QuLab / IST",initials:"DF",focus:"Quantum and quantum-inspired neural networks for pattern recognition.",url:"https://fenix.tecnico.ulisboa.pt/cursos/meec21/dissertacao/3098578385896091"},
+// Names and thesis records checked against https://www.it.pt/Members/Index/34614 on 2026-09-22.
+{name:"Dinis Rodrigues Fernandes Alves Felgueiras",role:"MSc Student",team:"QuLab / IST",initials:"DF",focus:"Quantum and quantum-inspired neural networks for pattern recognition.",url:"https://www.it.pt/Supervisions/Supervision/19492",urlLabel:"Thesis record",links:[{label:"Fénix",url:"https://fenix.tecnico.ulisboa.pt/cursos/meec21/dissertacao/3098578385896091"}]},
+{name:"Mariana Isabel Marçal Santana",role:"MSc Student",team:"QuLab / IST",initials:"MS",focus:"Implementation of Pretty Good Measurements on Quantum Computer via Petz Recovery Channel.",url:"https://www.it.pt/Supervisions/Supervision/19814",urlLabel:"Thesis record"},
+{name:"Francisco Soares de Carvalho",role:"MSc Student",team:"QuLab / IST",initials:"FC",focus:"Optical quantum memories based on gases of Alkali atoms.",url:"https://www.it.pt/Supervisions/Supervision/19808",urlLabel:"Thesis record"},
+{name:"José Figueiredo Martins Peixe dos Santos",role:"MSc Student",team:"QuLab / IST",initials:"JP",focus:"Generating entangled photon pairs for quantum communication.",url:"https://www.it.pt/Supervisions/Supervision/19815",urlLabel:"Thesis record"},
 {name:"João Duarte Guerreiro de Mendonça",role:"MSc Student",team:"QuLab / IST",initials:"JM",focus:"Photonic physical unclonable functions for cryptographic key generation.",url:"https://fenix.tecnico.ulisboa.pt/cursos/meec21/dissertacao/1409728525633485"}
+];
+// All completed MSc supervisions and co-supervisions listed on the IT profile on 2026-09-22.
+// Completion dates follow the profile's dated list; individual thesis pages use a generic status heading.
+window.QIQO_DATA.alumni=[
+{name:"Rodrigo Liquito Murta",role:"MSc alumnus · October 2025",team:"IST · Supervised by Emmanuel Zambrini Cruzeiro",initials:"RM",focus:"Generating entangled photon pairs compatible with atomic transitions.",url:"https://www.it.pt/Supervisions/Supervision/19256",urlLabel:"Thesis record"},
+{name:"Duarte Lourenço Sumares Velosa Barreto",role:"MSc alumnus · October 2025",team:"IST · Supervised by Emmanuel Zambrini Cruzeiro and Pedro Ricardo Neto Mendes",initials:"DB",focus:"Space-based high-speed quantum communication.",url:"https://www.it.pt/Supervisions/Supervision/19253",urlLabel:"Thesis record"},
+{name:"Alexandre Gil Gouveia Maia Barbosa",role:"MSc alumnus · July 2024",team:"IST · Supervised by Emmanuel Zambrini Cruzeiro and Hugo Terças",initials:"AB",focus:"Bell correlations and optical quantum memory for nobles-gas nuclear spins.",url:"https://www.it.pt/Supervisions/Supervision/19074",urlLabel:"Thesis record"},
+{name:"Ricardo Figueiredo Ferreira",role:"MSc alumnus · December 2023",team:"IST · Supervised by Paulo André; co-supervised by Emmanuel Zambrini Cruzeiro",initials:"RF",focus:"High-Speed Free-Space Quantum Key Distribution.",url:"https://www.it.pt/Supervisions/Supervision/18461",urlLabel:"Thesis record"},
+{name:"Hugo Miranda",role:"MSc alumnus · November 2023",team:"IST · Supervised by Emmanuel Zambrini Cruzeiro",initials:"HM",focus:"NMR Quantum Information Processing on liquid Chloroform and Continuous-Time Quantum Walks on Squares.",url:"https://www.it.pt/Supervisions/Supervision/18845",urlLabel:"Thesis record"},
+{name:"Luis Barbosa",role:"MSc alumnus · October 2023",team:"IST · Supervised by Emmanuel Zambrini Cruzeiro",initials:"LB",focus:"Mechanical design for satellite quantum communication.",url:"https://www.it.pt/Supervisions/Supervision/18932",urlLabel:"Thesis record"}
 ];
