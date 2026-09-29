@@ -71,7 +71,7 @@ def discover_arxiv(existing):
         stable_id=re.sub(r'v\d+$','',arxivid)
         if stable_id in known_ids: continue
         known_ids.add(stable_id)
-        out.append({'year':d.year,'title':title,'authors':authors,'venue':f'arXiv:{arxivid} (preprint)','url':absurl,'topic':classify(title)})
+        out.append({'year':d.year,'date':published,'title':title,'authors':authors,'venue':f'arXiv:{arxivid} (preprint)','url':absurl,'topic':classify(title)})
         existing.add(norm(title))
     return out
 
@@ -90,11 +90,17 @@ def discover_crossref(existing):
             if not title or norm(title) in existing: continue
             parts=(it.get('published-online') or it.get('published-print') or {}).get('date-parts',[[TODAY.year]])[0]
             year=int(parts[0]); authors=[]
+            pubdate=None
+            if len(parts)>=3:
+                try: pubdate=dt.date(int(parts[0]),int(parts[1]),int(parts[2])).isoformat()
+                except (TypeError,ValueError): pass
             for a in it.get('author') or []:
                 n=' '.join(x for x in [a.get('given',''),a.get('family','')] if x); authors.append(n)
             doi=it.get('DOI',''); url=('https://doi.org/'+doi) if doi else it.get('URL','')
             venue=((it.get('container-title') or [''])[0] or 'Journal publication')+f' ({year})'
-            out.append({'year':year,'title':title,'authors':', '.join(authors),'venue':venue,'url':url,'topic':classify(title)})
+            record={'year':year,'title':title,'authors':', '.join(authors),'venue':venue,'url':url,'topic':classify(title)}
+            if pubdate: record['date']=pubdate
+            out.append(record)
             existing.add(norm(title))
     return out
 

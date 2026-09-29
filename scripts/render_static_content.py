@@ -6,7 +6,9 @@ navigation and date-sensitive project status. Requires Node.js and beautifulsoup
 """
 import datetime as dt
 import html
+import hashlib
 import json
+import re
 from pathlib import Path
 import subprocess
 from bs4 import BeautifulSoup
@@ -27,9 +29,35 @@ def header(page):
     nav=''.join(f'<a href="{url}"'+(' class="active"' if key==page else '')+f'>{label}</a>' for key,label,url in NAV)
     return '<header class="site-header"><div class="shell nav-wrap"><div class="header-logos"><a class="brand" href="index.html" aria-label="QIQO home"><img class="brand-logo" src="assets/img/logo/qiqo-logo-2.png" alt="QIQO Laboratory logo"></a><div class="partner-logos" aria-label="Partner institutions"><a class="partner-logo partner-logo-it" href="https://www.it.pt/" aria-label="Instituto de Telecomunicações"><img src="assets/img/logo/it-logo.png" alt="Instituto de Telecomunicações" width="525" height="188"></a><a class="partner-logo partner-logo-ipfn" href="https://www.ipfn.tecnico.ulisboa.pt/" aria-label="Instituto de Plasmas e Fusão Nuclear"><img src="assets/img/logo/ipfn-logo.png" alt="Instituto de Plasmas e Fusão Nuclear" width="428" height="179"></a></div></div><button class="nav-toggle" aria-expanded="false" aria-label="Toggle navigation"><span></span><span></span><span></span></button><nav class="main-nav" aria-label="Primary navigation">'+nav+'</nav></div></header>'
 
+def pub_sort_key(p):
+    value=str(p.get('date') or '')
+    try:
+        if re.fullmatch(r'\d{4}-\d{2}-\d{2}', value):
+            return dt.date.fromisoformat(value)
+    except ValueError:
+        pass
+    raw=f"{p.get('url','')} {p.get('venue','')}"
+    m=re.search(r'(?:arxiv\.org/abs/|arXiv:)(\d{2})(\d{2})\.\d{4,5}',raw,re.I)
+    if m:
+        year=2000+int(m.group(1)); month=int(m.group(2))
+        if 1 <= month <= 12:
+            return dt.date(year,month,1)
+    return dt.date(int(p.get('year') or 1),1,1)
+
 def render_pubs(items):
+    items=sorted(items,key=pub_sort_key,reverse=True)
     years=sorted({p['year'] for p in items},reverse=True)
     return ''.join(f'<section class="pub-year"><div class="pub-year-label">{year}</div><div>'+''.join(f'<article class="pub-item"><span class="topic">{esc(p["topic"])}</span><h3>{link(p["url"],p["title"])}</h3><p>{esc(p["authors"])}</p><p class="venue">{esc(p["venue"])}</p></article>' for p in items if p['year']==year)+'</div></section>' for year in years)
+
+def cache_bust_publication_assets(soup):
+    if not soup.body or soup.body.get('data-page') != 'publications':
+        return
+    targets={'assets/js/publications-data.js','assets/js/member-publications-data.js','assets/js/site.js'}
+    for script in soup.find_all('script',src=True):
+        base=script['src'].split('?',1)[0]
+        if base in targets:
+            digest=hashlib.sha256((ROOT/base).read_bytes()).hexdigest()[:12]
+            script['src']=f'{base}?v={digest}'
 
 def render_news(items,home=False):
     if home:return ''.join(f'<a class="news-line" href="{esc(n["url"])}" target="_blank" rel="noreferrer"><time>{date(n["date"])}</time><strong>{esc(n["title"])}</strong><span>↗</span></a>' for n in items[:3])
@@ -56,5 +84,6 @@ def main():
         put(soup,'[data-home-news]',render_news(data['news'],True))
         for selector,key,large in [('data-leadership','leadership',True),('data-postdocs','postdocs',False),('data-phd-students','phdStudents',False),('data-master-students','masterStudents',False),('data-steering','steering',True),('data-alumni','alumni',False)]:
             put(soup,f'[{selector}]',render_people(data.get(key,[]),large))
+        cache_bust_publication_assets(soup)
         path.write_text(str(soup).rstrip()+'\n',encoding='utf-8')
 if __name__=='__main__':main()
