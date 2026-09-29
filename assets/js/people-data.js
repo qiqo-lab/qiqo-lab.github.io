@@ -12,16 +12,17 @@ window.QIQO_DATA.phdStudents=[
 {name:"Carlo Alfisi",role:"PhD Student",team:"QuMatt/MOTLab / IST · Hugo Terças",initials:"CA",image:"assets/img/people/carlo-alfisi.jpg",focus:"Plasmonic metamaterials and low-energy particle detection, including WIMP/neutrino sensing concepts.",url:"https://plasmas.tecnico.ulisboa.pt/research?page=3"}
 ];
 window.QIQO_DATA.masterStudents=[
-// Names and thesis records checked against https://www.it.pt/Members/Index/34614 on 2026-09-22.
+// Names and thesis records checked against https://www.it.pt/Members/Index/34614 on 2026-09-29.
 {name:"Dinis Rodrigues Fernandes Alves Felgueiras",role:"MSc Student",team:"QuLab / IST",initials:"DF",focus:"Quantum and quantum-inspired neural networks for pattern recognition.",url:"https://www.it.pt/Supervisions/Supervision/19492",urlLabel:"Thesis record",links:[{label:"Fénix",url:"https://fenix.tecnico.ulisboa.pt/cursos/meec21/dissertacao/3098578385896091"}]},
-{name:"Mariana Isabel Marçal Santana",role:"MSc Student",team:"QuLab / IST",initials:"MS",focus:"Implementation of Pretty Good Measurements on Quantum Computer via Petz Recovery Channel.",url:"https://www.it.pt/Supervisions/Supervision/19814",urlLabel:"Thesis record"},
-{name:"Francisco Soares de Carvalho",role:"MSc Student",team:"QuLab / IST",initials:"FC",focus:"Optical quantum memories based on gases of Alkali atoms.",url:"https://www.it.pt/Supervisions/Supervision/19808",urlLabel:"Thesis record"},
+{name:"Mariana Isabel Marçal Santana",role:"MSc Student",team:"QuLab / IST",initials:"MS",image:"assets/img/people/mariana-santana.jpg",focus:"Implementation of Pretty Good Measurements on Quantum Computer via Petz Recovery Channel.",url:"https://www.it.pt/Supervisions/Supervision/19814",urlLabel:"Thesis record"},
+{name:"Francisco Soares de Carvalho",role:"MSc Student",team:"QuLab / IST",initials:"FC",image:"assets/img/people/francisco-carvalho.jpg",focus:"Optical quantum memories based on gases of Alkali atoms.",url:"https://www.it.pt/Supervisions/Supervision/19808",urlLabel:"Thesis record"},
 {name:"José Figueiredo Martins Peixe dos Santos",role:"MSc Student",team:"QuLab / IST",initials:"JP",focus:"Generating entangled photon pairs for quantum communication.",url:"https://www.it.pt/Supervisions/Supervision/19815",urlLabel:"Thesis record"},
-{name:"João Duarte Guerreiro de Mendonça",role:"MSc Student",team:"QuLab / IST",initials:"JM",focus:"Photonic physical unclonable functions for cryptographic key generation.",url:"https://fenix.tecnico.ulisboa.pt/cursos/meec21/dissertacao/1409728525633485"}
+{name:"Laura Lopes Vilela",role:"MSc Student",team:"QuLab / Universidade de Coimbra",initials:"LV",focus:"Quantum memory for photons using Rubidium vapour.",url:"https://www.it.pt/Supervisions/Supervision/19835",urlLabel:"Thesis record"}
 ];
-// All completed MSc supervisions and co-supervisions listed on the IT profile on 2026-09-22.
-// Completion dates follow the profile's dated list; individual thesis pages use a generic status heading.
+// Alumni include completed MSc supervisions on the IT profile plus status corrections supplied directly by QIQO.
+// Completion dates are shown when they are available from the dated IT supervision list.
 window.QIQO_DATA.alumni=[
+{name:"João Duarte Guerreiro de Mendonça",role:"MSc alumnus",team:"QuLab / IST",initials:"JM",focus:"Photonic physical unclonable functions for cryptographic key generation.",url:"https://fenix.tecnico.ulisboa.pt/cursos/meec21/dissertacao/1409728525633485",urlLabel:"Fénix"},
 {name:"Rodrigo Liquito Murta",role:"MSc alumnus · October 2025",team:"IST · Supervised by Emmanuel Zambrini Cruzeiro",initials:"RM",focus:"Generating entangled photon pairs compatible with atomic transitions.",url:"https://www.it.pt/Supervisions/Supervision/19256",urlLabel:"Thesis record"},
 {name:"Duarte Lourenço Sumares Velosa Barreto",role:"MSc alumnus · October 2025",team:"IST · Supervised by Emmanuel Zambrini Cruzeiro and Pedro Ricardo Neto Mendes",initials:"DB",focus:"Space-based high-speed quantum communication.",url:"https://www.it.pt/Supervisions/Supervision/19253",urlLabel:"Thesis record"},
 {name:"Alexandre Gil Gouveia Maia Barbosa",role:"MSc alumnus · July 2024",team:"IST · Supervised by Emmanuel Zambrini Cruzeiro and Hugo Terças",initials:"AB",focus:"Bell correlations and optical quantum memory for nobles-gas nuclear spins.",url:"https://www.it.pt/Supervisions/Supervision/19074",urlLabel:"Thesis record"},
