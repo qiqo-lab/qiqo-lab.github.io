@@ -56,7 +56,7 @@ def cache_bust_page_assets(soup):
     if page=='publications':
         targets={'assets/js/publications-data.js','assets/js/member-publications-data.js','assets/js/site.js'}
     elif page=='people':
-        targets={'assets/js/people-data.js'}
+        targets={'assets/js/people-data.js','assets/js/site.js'}
     else:
         return
     for script in soup.find_all('script',src=True):
