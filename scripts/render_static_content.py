@@ -49,10 +49,16 @@ def render_pubs(items):
     years=sorted({p['year'] for p in items},reverse=True)
     return ''.join(f'<section class="pub-year"><div class="pub-year-label">{year}</div><div>'+''.join(f'<article class="pub-item"><span class="topic">{esc(p["topic"])}</span><h3>{link(p["url"],p["title"])}</h3><p>{esc(p["authors"])}</p><p class="venue">{esc(p["venue"])}</p></article>' for p in items if p['year']==year)+'</div></section>' for year in years)
 
-def cache_bust_publication_assets(soup):
-    if not soup.body or soup.body.get('data-page') != 'publications':
+def cache_bust_page_assets(soup):
+    if not soup.body:
         return
-    targets={'assets/js/publications-data.js','assets/js/member-publications-data.js','assets/js/site.js'}
+    page=soup.body.get('data-page')
+    if page=='publications':
+        targets={'assets/js/publications-data.js','assets/js/member-publications-data.js','assets/js/site.js'}
+    elif page=='people':
+        targets={'assets/js/people-data.js'}
+    else:
+        return
     for script in soup.find_all('script',src=True):
         base=script['src'].split('?',1)[0]
         if base in targets:
@@ -84,6 +90,6 @@ def main():
         put(soup,'[data-home-news]',render_news(data['news'],True))
         for selector,key,large in [('data-leadership','leadership',True),('data-postdocs','postdocs',False),('data-phd-students','phdStudents',False),('data-master-students','masterStudents',False),('data-steering','steering',True),('data-alumni','alumni',False)]:
             put(soup,f'[{selector}]',render_people(data.get(key,[]),large))
-        cache_bust_publication_assets(soup)
+        cache_bust_page_assets(soup)
         path.write_text(str(soup).rstrip()+'\n',encoding='utf-8')
 if __name__=='__main__':main()
