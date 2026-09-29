@@ -21,7 +21,7 @@ window.QIQO_DATA.masterStudents=[
 {name:"Laura Lopes Vilela",role:"MSc Student",team:"QuLab / Universidade de Coimbra",initials:"LV",focus:"Quantum memory for photons using Rubidium vapour.",url:"https://www.it.pt/Supervisions/Supervision/19835",urlLabel:"Thesis record"}
 ];
 window.QIQO_DATA.bachelorStudents=[
-{name:"Frederico Castro",role:"Bachelor Student",team:"QuLab / IST",initials:"FC",image:"assets/img/people/frederico-castro-chat-exact.jpg",focus:"Experimental quantum communication."}
+{name:"Frederico Castro",role:"Bachelor Student",team:"QuLab / IST",initials:"FC",image:"assets/img/people/frederico-castro-fixed-20260929.jpg",focus:"Experimental quantum communication."}
 ];
 // Alumni include completed MSc supervisions on the IT profile plus status corrections supplied directly by QIQO.
 // Completion dates are shown when they are available from the dated IT supervision list.
