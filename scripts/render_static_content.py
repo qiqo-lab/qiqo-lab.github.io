@@ -56,7 +56,7 @@ def cache_bust_page_assets(soup):
     if page=='publications':
         targets={'assets/js/publications-data.js','assets/js/member-publications-data.js','assets/js/site.js'}
     elif page=='people':
-        targets={'assets/js/people-data.js'}
+        targets={'assets/js/people-data.js','assets/js/site.js'}
     else:
         return
     for script in soup.find_all('script',src=True):
@@ -88,7 +88,7 @@ def main():
         put(soup,'[data-publications]',render_pubs(data['publications']))
         put(soup,'[data-news]',render_news(data['news']))
         put(soup,'[data-home-news]',render_news(data['news'],True))
-        for selector,key,large in [('data-leadership','leadership',True),('data-postdocs','postdocs',False),('data-phd-students','phdStudents',False),('data-master-students','masterStudents',False),('data-steering','steering',True),('data-alumni','alumni',False)]:
+        for selector,key,large in [('data-leadership','leadership',True),('data-postdocs','postdocs',False),('data-phd-students','phdStudents',False),('data-master-students','masterStudents',False),('data-bachelor-students','bachelorStudents',False),('data-steering','steering',True),('data-alumni','alumni',False)]:
             put(soup,f'[{selector}]',render_people(data.get(key,[]),large))
         cache_bust_page_assets(soup)
         path.write_text(str(soup).rstrip()+'\n',encoding='utf-8')

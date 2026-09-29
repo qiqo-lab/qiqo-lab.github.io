@@ -17,6 +17,7 @@
   const postdocs=document.querySelector("[data-postdocs]");if(postdocs)postdocs.innerHTML=(DATA.postdocs||[]).map(p=>personCard(p)).join("");
   const phd=document.querySelector("[data-phd-students]");if(phd)phd.innerHTML=(DATA.phdStudents||[]).map(p=>personCard(p)).join("");
   const masters=document.querySelector("[data-master-students]");if(masters)masters.innerHTML=(DATA.masterStudents||[]).map(p=>personCard(p)).join("");
+  const bachelors=document.querySelector("[data-bachelor-students]");if(bachelors)bachelors.innerHTML=(DATA.bachelorStudents||[]).map(p=>personCard(p)).join("");
   const steering=document.querySelector("[data-steering]");if(steering)steering.innerHTML=(DATA.steering||[]).map(p=>personCard(p,true)).join("");
   const alumni=document.querySelector("[data-alumni]");if(alumni)alumni.innerHTML=(DATA.alumni||[]).map(p=>personCard(p)).join("");
   const research=document.querySelector("[data-research]");if(research)research.innerHTML=(DATA.research||[]).map(r=>`<article class="research-card"><div class="research-icon">${icon(r.icon)}</div><span class="eyebrow">${esc(r.kicker)}</span><h3>${esc(r.title)}</h3><p>${esc(r.text)}</p><div class="tag-row">${(r.tags||[]).map(t=>`<span>${esc(t)}</span>`).join("")}</div></article>`).join("");

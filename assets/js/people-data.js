@@ -13,12 +13,15 @@ window.QIQO_DATA.phdStudents=[
 ];
 window.QIQO_DATA.masterStudents=[
 // Names and thesis records checked against https://www.it.pt/Members/Index/34614 on 2026-09-29.
-{name:"Dinis Rodrigues Fernandes Alves Felgueiras",role:"MSc Student",team:"QuLab / IST",initials:"DF",focus:"Quantum and quantum-inspired neural networks for pattern recognition.",url:"https://www.it.pt/Supervisions/Supervision/19492",urlLabel:"Thesis record",links:[{label:"Fénix",url:"https://fenix.tecnico.ulisboa.pt/cursos/meec21/dissertacao/3098578385896091"}]},
+{name:"Dinis Rodrigues Fernandes Alves Felgueiras",role:"MSc Student",team:"QuLab / IST",initials:"DF",image:"assets/img/people/dinis-felgueiras.jpg",focus:"Quantum and quantum-inspired neural networks for pattern recognition.",url:"https://www.it.pt/Supervisions/Supervision/19492",urlLabel:"Thesis record",links:[{label:"Fénix",url:"https://fenix.tecnico.ulisboa.pt/cursos/meec21/dissertacao/3098578385896091"}]},
 {name:"Mariana Isabel Marçal Santana",role:"MSc Student",team:"QuLab / IST",initials:"MS",image:"assets/img/people/mariana-santana.jpg",focus:"Implementation of Pretty Good Measurements on Quantum Computer via Petz Recovery Channel.",url:"https://www.it.pt/Supervisions/Supervision/19814",urlLabel:"Thesis record"},
 {name:"Francisco Soares de Carvalho",role:"MSc Student",team:"QuLab / IST",initials:"FC",image:"assets/img/people/francisco-carvalho.jpg",focus:"Optical quantum memories based on gases of Alkali atoms.",url:"https://www.it.pt/Supervisions/Supervision/19808",urlLabel:"Thesis record"},
 {name:"Francisco José Chaves Gomes",role:"MSc Student",team:"QuLab / IST · Emmanuel Zambrini Cruzeiro · Sep 2025–Nov 2026",initials:"FG",image:"assets/img/people/francisco-chaves-gomes.jpg",focus:"Generating entangled photon pairs for spaceborne quantum communication."},
-{name:"José Figueiredo Martins Peixe dos Santos",role:"MSc Student",team:"QuLab / IST",initials:"JP",focus:"Generating entangled photon pairs for quantum communication.",url:"https://www.it.pt/Supervisions/Supervision/19815",urlLabel:"Thesis record"},
+{name:"José Figueiredo Martins Peixe dos Santos",role:"MSc Student",team:"QuLab / IST",initials:"JP",image:"assets/img/people/jose-peixe.jpg",focus:"Generating entangled photon pairs for quantum communication.",url:"https://www.it.pt/Supervisions/Supervision/19815",urlLabel:"Thesis record"},
 {name:"Laura Lopes Vilela",role:"MSc Student",team:"QuLab / Universidade de Coimbra",initials:"LV",focus:"Quantum memory for photons using Rubidium vapour.",url:"https://www.it.pt/Supervisions/Supervision/19835",urlLabel:"Thesis record"}
+];
+window.QIQO_DATA.bachelorStudents=[
+{name:"Frederico Castro",role:"Bachelor Student",team:"QuLab / IST",initials:"FC",image:"assets/img/people/frederico-castro.jpg",focus:"Experimental quantum communication."}
 ];
 // Alumni include completed MSc supervisions on the IT profile plus status corrections supplied directly by QIQO.
 // Completion dates are shown when they are available from the dated IT supervision list.
