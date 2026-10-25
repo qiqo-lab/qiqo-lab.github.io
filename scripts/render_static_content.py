@@ -67,7 +67,7 @@ def cache_bust_page_assets(soup):
 
 def render_news(items,home=False):
     if home:return ''.join(f'<a class="news-line" href="{esc(n["url"])}" target="_blank" rel="noreferrer"><time>{date(n["date"])}</time><strong>{esc(n["title"])}</strong><span>↗</span></a>' for n in items[:3])
-    return ''.join(f'<article class="news-card"><time datetime="{esc(n["date"])}">{date(n["date"])}</time><h3>{esc(n["title"])}</h3><p>{esc(n["text"])}</p><a class="text-link" href="{esc(n["url"])}" target="_blank" rel="noreferrer">Read source ↗</a></article>' for n in items)
+    return ''.join(f'<article class="news-card">'+(f'<img class="news-card-image" src="{esc(n["image"])}" alt="{esc(n.get("imageAlt") or n["title"])}" loading="lazy">' if n.get("image") else '')+f'<time datetime="{esc(n["date"])}">{date(n["date"])}</time><h3>{esc(n["title"])}</h3><p>{esc(n["text"])}</p><a class="text-link" href="{esc(n["url"])}" target="_blank" rel="noreferrer">Read source ↗</a></article>' for n in items)
 
 def render_people(items,large=False):
     cards=[]
