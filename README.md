@@ -31,7 +31,9 @@ Edit `assets/js/news-data.js`. Keep newest items first; the homepage automatical
 
 ## Weekly human-reviewed auto-update
 
-`.github/workflows/weekly-content-review.yml` runs every Monday at **08:17 UTC** and can also be run manually from the GitHub Actions tab. It runs `scripts/weekly_content_update.py`, which scans approved sources including arXiv, Crossref, IT and IPFN for candidate publications, news and projects.
+`.github/workflows/weekly-content-review.yml` runs every Monday at **08:17 UTC** and can also be run manually from the GitHub Actions tab. It runs `scripts/weekly_content_update.py`, which scans arXiv, Crossref, APS accepted-paper listings, IT and IPFN for candidate publications, news and projects. RTP and other media sites are not scanned; individual media appearances can be added manually.
+
+APS coverage includes PRL, PRA, PRB, PRD, PRE, Physical Review Research, PRX, PRX Quantum, Physical Review Applied, Physical Review Materials and Physical Review Fluids. The scanner follows each listing's pagination, matches the configured QIQO author names (including initials and accented names), and records the actual acceptance date and DOI. New entries are explicitly labelled **accepted**, with no invented volume or article number. Existing titles and DOIs are skipped. Access errors, unexpected layouts and incomplete pagination appear in the review's source warnings rather than being reported as successful empty checks. Publication metadata changes to already-listed papers still require editorial review.
 
 If candidates are found, the workflow opens or refreshes a pull request on `automation/weekly-content-review`, assigns and requests review from `EmmanuelZambriniCruzeiro`, and places a concise summary in the PR body:
 
