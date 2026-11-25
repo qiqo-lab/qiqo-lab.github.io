@@ -6,7 +6,7 @@ repository. A scheduled GitHub Action opens/refreshes a pull request and never
 merges it automatically.
 """
 from __future__ import annotations
-import argparse, datetime as dt, html, json, re, sys, urllib.parse
+import argparse, datetime as dt, html, json, re, sys, unicodedata, urllib.parse
 from pathlib import Path
 import requests
 from bs4 import BeautifulSoup
@@ -21,6 +21,18 @@ HEADERS={'User-Agent':'QIQO-website-weekly-review/1.0 (+https://github.com/qiqo-
 TODAY=dt.date.today(); CUTOFF=TODAY-dt.timedelta(days=45)
 ARXIV_AUTHORS=['Emmanuel Zambrini Cruzeiro','Hugo Tercas','Preeti Yadav','Flavien Hirsch','Ricardo Faleiro','Pedro Neto Mendes','Goncalo Teixeira','Jose Senart','Jose Luis Figueiredo','Carlo Alfisi']
 ORCIDS=['0000-0003-3418-9131','0000-0003-2826-4377','0009-0004-1924-0407','0000-0002-4155-7396']
+# Accepted-paper sources relevant to QIQO; media appearances are added manually.
+APS_JOURNALS={
+    'prl':'Physical Review Letters', 'pra':'Physical Review A',
+    'prb':'Physical Review B', 'prd':'Physical Review D', 'pre':'Physical Review E',
+    'prresearch':'Physical Review Research', 'prx':'Physical Review X',
+    'prxquantum':'PRX Quantum', 'prapplied':'Physical Review Applied',
+    'prmaterials':'Physical Review Materials', 'prfluids':'Physical Review Fluids',
+}
+APS_MAX_PAGES=50
+APS_DATE_RE=re.compile(r'\bAccepted\s+(\d{1,2})\s+([A-Za-z]+),?\s+(20\d{2})\b')
+APS_MONTHS={m:i for i,m in enumerate(('January','February','March','April','May','June',
+    'July','August','September','October','November','December'),1)}
 KEYWORDS=['qiqo','qulab','qumatt','motlab','quantum','keyless','qkpc','qkd','iberianqci','qsnp','quantumpuf','cold atom','ultracold','plasmon','axion','faleiro','hirsch','yadav','terças','tercas','cruzeiro']
 SOURCE_WARNINGS=[]
 
@@ -54,6 +66,105 @@ def classify(title):
     if any(k in t for k in ['plasma','plasmon','condens','spin','axion','semiconductor','moir']): return 'Quantum matter'
     return 'Quantum information'
 def clean_title(s): return re.sub(r'\s+',' ',html.unescape(s or '')).strip()
+
+def name_tokens(name):
+    folded=''.join(c for c in unicodedata.normalize('NFKD',name) if not unicodedata.combining(c))
+    return re.findall(r'[a-z]+',folded.lower())
+
+def qiqo_author(authors):
+    # Match complete names or initials within one author, never a surname alone.
+    for author in re.split(r',|;|\band\b',authors):
+        actual=name_tokens(author)
+        for member in ARXIV_AUTHORS:
+            expected=name_tokens(member)
+            if (len(actual)==len(expected) and actual[-1]==expected[-1]
+                    and all(a==e or a==e[0] for a,e in zip(actual[:-1],expected[:-1]))):
+                return True
+    return False
+
+def aps_doi(url):
+    match=re.search(r'10\.1103/[^\s?#"<>]+',urllib.parse.unquote(url),re.I)
+    return match.group(0).lower().rstrip('/') if match else None
+
+def parse_aps_listing(page_html, url, journal):
+    soup=BeautifulSoup(page_html,'html.parser'); records=[]; seen=set()
+    path=urllib.parse.urlparse(url).path.rstrip('/')
+    detail_pattern=re.compile(r'^'+re.escape(path)+r'/10\.1103/[^/?#]+$',re.I)
+    links=[]
+    for anchor in soup.select('h2 a[href], h3 a[href]'):
+        target=urllib.parse.urljoin(url,anchor['href']); parsed=urllib.parse.urlparse(target)
+        if parsed.netloc=='journals.aps.org' and detail_pattern.match(parsed.path):
+            links.append((anchor,target))
+    for anchor,target in links:
+        doi=aps_doi(target)
+        if doi in seen: continue
+        seen.add(doi)
+        title=clean_title(anchor.get_text(' ',strip=True))
+        # Use the smallest card containing this title and its acceptance date.
+        # Do not borrow a date/author list from the next card or page footer.
+        card=None; match=None
+        for parent in anchor.parents:
+            contained={a['href'] for a in parent.select('h2 a[href], h3 a[href]')
+                       if '/accepted/10.1103/' in a['href']}
+            if len(contained)>1: break
+            text=clean_title(parent.get_text(' ',strip=True))
+            match=APS_DATE_RE.search(text)
+            if match:
+                card=text; break
+        if not card or not title or title not in card:
+            source_warning(target,'Could not read accepted-paper metadata; skipped')
+            continue
+        try:
+            accepted=dt.date(int(match[3]),APS_MONTHS[match[2].title()],int(match[1]))
+        except (KeyError,ValueError):
+            source_warning(target,'Invalid acceptance date; skipped'); continue
+        title_end=card.index(title)+len(title)
+        authors=clean_title(card[title_end:match.start()])
+        if not authors:
+            source_warning(target,'Missing accepted-paper authors; skipped'); continue
+        records.append({'year':accepted.year,'date':accepted.isoformat(),
+            'acceptedDate':accepted.isoformat(),'title':title,'authors':authors,
+            'venue':f'{journal} (accepted {accepted.isoformat()})',
+            'url':'https://doi.org/'+doi,'topic':classify(title)})
+    if not links and not re.search(r'\b0 Results\b|no (?:accepted papers|articles|results)',soup.get_text(' ',strip=True),re.I):
+        raise ValueError('No accepted-paper entries or explicit empty result; source may be unavailable or its layout changed')
+    current=int(urllib.parse.parse_qs(urllib.parse.urlparse(url).query).get('page',['1'])[0])
+    next_url=None
+    for anchor in soup.find_all('a',href=True):
+        target=urllib.parse.urljoin(url,anchor['href']); parsed=urllib.parse.urlparse(target)
+        if parsed.netloc!='journals.aps.org' or parsed.path.rstrip('/')!=path: continue
+        if urllib.parse.parse_qs(parsed.query).get('page')==[str(current+1)]:
+            next_url=target; break
+    return records,next_url
+
+def discover_aps_accepted(existing):
+    known_dois={aps_doi(u) for path in (PUBS,MEMBER_PUBS) for u in existing_urls(path)}
+    out=[]
+    for slug,journal in APS_JOURNALS.items():
+        url=f'https://journals.aps.org/{slug}/accepted'; visited=set(); fingerprints=set()
+        while url:
+            if url in visited or len(visited)>=APS_MAX_PAGES:
+                source_warning(journal,'Accepted-paper pagination incomplete; page limit or repeated URL'); break
+            visited.add(url)
+            try:
+                r=requests.get(url,headers=HEADERS,timeout=25); r.raise_for_status()
+                records,next_url=parse_aps_listing(r.text,url,journal)
+            except Exception as e:
+                source_warning(f'APS accepted papers ({journal}) {url}',e); break
+            fingerprint=tuple(p['url'] for p in records)
+            if fingerprint and fingerprint in fingerprints:
+                source_warning(journal,'Accepted-paper pagination repeated a page; scan incomplete'); break
+            fingerprints.add(fingerprint)
+            for record in records:
+                if not CUTOFF.isoformat()<=record['date']<=TODAY.isoformat(): continue
+                if not qiqo_author(record['authors']): continue
+                doi=aps_doi(record['url'])
+                if norm(record['title']) in existing or doi in known_dois: continue
+                out.append(record); existing.add(norm(record['title'])); known_dois.add(doi)
+            # Follow the listing's own next-page link, including pages beyond the
+            # first five. Never interpret a blocked source as a successful empty scan.
+            url=next_url
+    return out
 
 def discover_arxiv(existing):
     known_ids=set(re.findall(r'arxiv\.org/abs/(\d{4}\.\d{4,5})', '\n'.join(p.read_text(encoding='utf-8') for p in (PUBS,MEMBER_PUBS)), re.I))
@@ -187,6 +298,8 @@ def main():
     except Exception as e: pubs=[];warnings.append(f'arXiv: {e}')
     try: pubs+=discover_crossref(titles)
     except Exception as e:warnings.append(f'Crossref: {e}')
+    try: pubs+=discover_aps_accepted(titles)
+    except Exception as e:warnings.append(f'APS accepted papers: {e}')
     try: news=discover_news(news_urls)
     except Exception as e: news=[];warnings.append(f'news scan: {e}')
     try: projects=discover_projects(project_urls)
